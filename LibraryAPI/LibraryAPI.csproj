@@ -25,4 +25,8 @@
     <Folder Include="Repository\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="appsettings.Example.json" />
+  </ItemGroup>
+
 </Project>
