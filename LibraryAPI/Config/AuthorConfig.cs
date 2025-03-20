@@ -12,6 +12,8 @@ namespace LibraryAPI.Config
             builder.Property(x => x.RecordId).HasColumnName("Id").HasColumnType("int");
             builder.Property(x => x.FirstName).HasColumnName("FirstName").HasColumnType("nvarchar(250)").IsRequired(false);
             builder.Property(x => x.LastName).HasColumnName("LastName").HasColumnType("nvarchar(250)").IsRequired(false);
+
+            builder.HasMany(x => x.BookAuthors);
         }
     }
 }

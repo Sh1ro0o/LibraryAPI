@@ -5,10 +5,6 @@ namespace LibraryAPI.Model
 {
     public class BookAuthor
     {
-        [Key]
-        [Column("Id")]
-        public int RecordId { get; set; }
-
         //Book
         public int BookId { get; set; }
         public Book? Book { get; set; }

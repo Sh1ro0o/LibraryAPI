@@ -12,5 +12,7 @@ namespace LibraryAPI.Model
         public DateOnly? PublishDate { get; set; }
         public string? ISBN { get; set; }
         public string? Description { get; set; }
+
+        public ICollection<BookAuthor>? BookAuthors { get; set; }
     }
 }

@@ -10,5 +10,7 @@ namespace LibraryAPI.Model
         public int RecordId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+
+        public ICollection<BookAuthor>? BookAuthors { get; set; }
     }
 }

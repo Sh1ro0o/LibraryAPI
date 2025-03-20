@@ -14,6 +14,8 @@ namespace LibraryAPI.Config
             builder.Property(x => x.PublishDate).HasColumnName("PublishDate").HasColumnType("date").IsRequired(false);
             builder.Property(x => x.ISBN).HasColumnName("ISBN").HasColumnType("nvarchar(250)").IsRequired(false);
             builder.Property(x => x.Description).HasColumnName("Description").HasColumnType("nvarchar(2000)").IsRequired(false);
+
+            builder.HasMany(x => x.BookAuthors);
         }
     }
 }
