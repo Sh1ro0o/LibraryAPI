@@ -40,6 +40,13 @@ namespace LibraryAPI.Repository
                 query = query.Where(x => x.RecordId != filter.ExcludeRecordId);
             }
 
+            //Check if include authors
+            if (filter.IncludeAuthors)
+            {
+                query = query
+                    .Include(x => x.BookAuthors).ThenInclude(x => x.Author);
+            }
+
             if (filter.PageNumber != null && filter.PageSize != null)
             {
                 query = query.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1));

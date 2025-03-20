@@ -19,6 +19,7 @@ namespace LibraryAPI.Service
         public async Task<OperationResult<IEnumerable<BookDto>>> GetAll(BookFilter filter)
         {
             var books = await _unitOfWork.BookRepository.GetAll(filter);
+
             var booksDto = books.Select(x => x.ToBookDto());
             
             return OperationResult<IEnumerable<BookDto>>.Success(booksDto);

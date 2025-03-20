@@ -1,6 +1,9 @@
 using LibraryAPI.Data;
 using LibraryAPI.Interface;
+using LibraryAPI.Interface.Repository;
+using LibraryAPI.Interface.Service;
 using LibraryAPI.Repository;
+using LibraryAPI.Service;
 using LibraryAPI.UnitOfWork;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +12,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Connect to database
 builder.Services.AddDbContext<LibraryDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ??
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
 
-//Services
+//Repository
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+
+//Service
+builder.Services.AddScoped<IBookService, BookService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

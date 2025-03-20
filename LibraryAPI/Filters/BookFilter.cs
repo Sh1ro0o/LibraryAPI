@@ -7,6 +7,7 @@
         public DateOnly? PublishDate { get; set; }
         public string? ISBN { get; set; }
         public int? ExcludeRecordId { get; set; }
+        public bool IncludeAuthors { get; set; } = true;
 
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }
