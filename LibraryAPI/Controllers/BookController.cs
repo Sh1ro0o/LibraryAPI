@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Dto.Book;
+﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -16,14 +17,14 @@ namespace LibraryAPI.Controllers
             _bookService = bookService;
         }
 
-        [ProducesResponseType(200, Type = typeof(IEnumerable<BookDto>))]
+        [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<BookDto>>))]
         [ProducesResponseType(500)]
         [HttpGet("allBooks")]
         public async Task<IActionResult> GetBooks([FromQuery] BookFilter filter)
         {
             var result = await _bookService.GetAll(filter);
 
-            return Ok(result);
+            return result.ToActionResult();
         }
     }
 }

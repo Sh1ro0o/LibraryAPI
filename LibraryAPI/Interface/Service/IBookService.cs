@@ -8,9 +8,9 @@ namespace LibraryAPI.Interface.Service
     public interface IBookService
     {
         Task<OperationResult<IEnumerable<BookDto>>> GetAll(BookFilter filter);
-        Task<OperationResult> GetById(int id);
-        Task<OperationResult> CreateBook(CreateBookDto model);
-        Task<OperationResult> UpdateBook(SaveBookDto model);
-        Task<OperationResult> DeleteBook(int id);
+        Task<OperationResult<BookDto?>> GetById(int id);
+        Task<OperationResult<BookDto?>> CreateBook(CreateBookDto model);
+        Task<OperationResult<BookDto?>> UpdateBook(SaveBookDto model);
+        Task<OperationResult<bool>> DeleteBook(int id);
     }
 }

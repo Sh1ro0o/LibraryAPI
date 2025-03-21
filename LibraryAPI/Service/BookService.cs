@@ -25,19 +25,19 @@ namespace LibraryAPI.Service
             return OperationResult<IEnumerable<BookDto>>.Success(booksDto);
         }
 
-        public async Task<OperationResult> GetById(int id)
+        public async Task<OperationResult<BookDto?>> GetById(int id)
         {
             var book = await _unitOfWork.BookRepository.GetById(id);
 
             if (book == null)
             {
-                return OperationResult.NotFound(message: $"Book with Id: {id} not found!");
+                return OperationResult<BookDto?>.NotFound(message: $"Book with Id: {id} not found!");
             }
 
-            return OperationResult<BookDto>.Success(book.ToBookDto());
+            return OperationResult<BookDto?>.Success(book.ToBookDto());
         }
         
-        public async Task<OperationResult> CreateBook(CreateBookDto model)
+        public async Task<OperationResult<BookDto?>> CreateBook(CreateBookDto model)
         {
             throw new NotImplementedException();
 
@@ -53,15 +53,15 @@ namespace LibraryAPI.Service
 
             if (existingBook != null)
             {
-                return OperationResult.Conflict($"Book with ISBN: {model.ISBN}");
+                return OperationResult<BookDto?>.Conflict($"Book with ISBN: {model.ISBN}");
             }
         }
-        public Task<OperationResult> UpdateBook(SaveBookDto model)
+        public Task<OperationResult<BookDto?>> UpdateBook(SaveBookDto model)
         {
             throw new NotImplementedException();
         }
 
-        public Task<OperationResult> DeleteBook(int id)
+        public Task<OperationResult<bool>> DeleteBook(int id)
         {
             throw new NotImplementedException();
         }
