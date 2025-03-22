@@ -19,6 +19,7 @@ builder.Services.AddDbContext<LibraryDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
 
 //Service
 builder.Services.AddScoped<IBookService, BookService>();
@@ -30,7 +31,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Error-Codes
-builder.Services.AddProblemDetails(options =>
+/*builder.Services.AddProblemDetails(options =>
 {
     options.CustomizeProblemDetails = context =>
     {
@@ -42,7 +43,7 @@ builder.Services.AddProblemDetails(options =>
         var activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
         context.ProblemDetails.Extensions.TryAdd("traceId", activity?.Id);
     };
-});
+});*/
 
 var app = builder.Build();
 

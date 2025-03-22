@@ -15,7 +15,7 @@ namespace LibraryAPI.Repository
             _context = context;
         }
 
-        public async Task<List<Book>> GetAll(BookFilter filter)
+        public IQueryable<Book> GetAll(BookFilter filter)
         {
             var query = _context.Book.AsQueryable();
 
@@ -35,9 +35,9 @@ namespace LibraryAPI.Repository
                 query = query.Where(x => x.PublishDate == filter.PublishDate);
             }
 
-            if (filter.ExcludeRecordId != null)
+            if (!string.IsNullOrWhiteSpace(filter.ISBN))
             {
-                query = query.Where(x => x.RecordId != filter.ExcludeRecordId);
+                query = query.Where(x => x.ISBN == filter.ISBN);
             }
 
             //Check if include authors
@@ -55,7 +55,7 @@ namespace LibraryAPI.Repository
 
             query = query.OrderByDescending(x => x.RecordId);
 
-            return await query.ToListAsync();
+            return query;
         }
 
         public async Task<Book?> GetById(int id)

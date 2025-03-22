@@ -26,5 +26,18 @@ namespace LibraryAPI.Controllers
 
             return result.ToActionResult();
         }
+
+        [ProducesResponseType(200, Type = typeof(ResponseObject<BookDto>))] //OK
+        [ProducesResponseType(409)] //Conflict
+        [ProducesResponseType(404)] //NotFound
+        [ProducesResponseType(400)] //Bad Request
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpPost]
+        public async Task<IActionResult> CreateBook([FromBody]CreateBookDto model)
+        {
+            var result = await _bookService.CreateBook(model);
+
+            return result.ToActionResult();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LibraryAPI.Data;
 using LibraryAPI.Interface;
+using LibraryAPI.Interface.Repository;
 using LibraryAPI.Repository;
 
 namespace LibraryAPI.UnitOfWork
@@ -8,6 +9,8 @@ namespace LibraryAPI.UnitOfWork
     {
         private readonly LibraryDbContext _context;
         private IBookRepository _bookRepository;
+        private IAuthorRepository _authorRepository;
+        private IBookAuthorRepository _bookAuthorRepository;
 
         public UnitOfWork(LibraryDbContext context)
         {
@@ -15,6 +18,8 @@ namespace LibraryAPI.UnitOfWork
         }
 
         public IBookRepository BookRepository => _bookRepository ??= new BookRepository(_context);
+        public IAuthorRepository AuthorRepository => _authorRepository ??= new AuthorRepository(_context);
+        public IBookAuthorRepository BookAuthorRepository => _bookAuthorRepository ??= new BookAuthorRepository(_context);
 
         public async Task<int> Commit()
         {

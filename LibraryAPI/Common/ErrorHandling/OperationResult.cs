@@ -46,5 +46,25 @@ namespace LibraryAPI.Common
                 ErrorType = OperationErrorType.Conflict
             };
         }
+
+        public static OperationResult<T> BadRequest(string? message = null)
+        {
+            return new OperationResult<T>
+            {
+                IsSuccessful = false,
+                Message = message,
+                ErrorType = OperationErrorType.BadRequest
+            };
+        }
+
+        public static OperationResult<T> InternalServerError(string? message = null)
+        {
+            return new OperationResult<T>
+            {
+                IsSuccessful = false,
+                Message = message,
+                ErrorType = OperationErrorType.InternalServerError
+            };
+        }
     }
 }

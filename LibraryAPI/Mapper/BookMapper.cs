@@ -23,7 +23,7 @@ namespace LibraryAPI.Mapper
                     FirstName = x.Author!.FirstName,
                     LastName = x.Author!.LastName
                 })
-                .ToList()
+                .ToList() ?? new List<AuthorDto>()
             };
         }
 

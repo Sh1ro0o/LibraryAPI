@@ -3,6 +3,7 @@ using LibraryAPI.Filters;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryAPI.Repository
 {
@@ -14,7 +15,8 @@ namespace LibraryAPI.Repository
             _context = context;
         }
 
-        public async Task<List<Author>> GetAll(AuthorFilter filter)
+        #region GET Methods
+        public IQueryable<Author> GetAll(AuthorFilter filter)
         {
             var query = _context.Author.AsQueryable();
 
@@ -46,7 +48,7 @@ namespace LibraryAPI.Repository
 
             query = query.OrderByDescending(x => x.RecordId);
 
-            return await query.ToListAsync();
+            return query;
         }
 
         public async Task<Author?> GetById(int id)
@@ -54,21 +56,29 @@ namespace LibraryAPI.Repository
             return await _context.Author.FirstOrDefaultAsync(x => x.RecordId == id);
         }
 
+        #endregion
+
+        #region CREATE Methods
         public async Task<Author> CreateAuthor(Author author)
         {
             await _context.Author.AddAsync(author);
 
             return author;
         }
+        #endregion
 
+        #region UPDATE Methods
         public void UpdateAuthor(Author author)
         {
             _context.Author.Update(author);
         }
+        #endregion
 
+        #region DELETE Methods
         public void DeleteAuthor(Author author)
         {
             _context.Author.Remove(author);
         }
+        #endregion
     }
 }
