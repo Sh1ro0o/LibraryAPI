@@ -33,9 +33,33 @@ namespace LibraryAPI.Controllers
         [ProducesResponseType(400)] //Bad Request
         [ProducesResponseType(500)] //Internal Server Error
         [HttpPost]
-        public async Task<IActionResult> CreateBook([FromBody]CreateBookDto model)
+        public async Task<IActionResult> CreateBook([FromBody] CreateBookDto model)
         {
             var result = await _bookService.CreateBook(model);
+
+            return result.ToActionResult();
+        }
+
+        [ProducesResponseType(200, Type = typeof(ResponseObject<BookDto>))] //OK
+        [ProducesResponseType(404)] //NotFound
+        [ProducesResponseType(400)] //Bad Request
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpPut]
+        public async Task<IActionResult> UpdateBook([FromBody] SaveBookDto model)
+        {
+            var result = await _bookService.UpdateBook(model);
+
+            return result.ToActionResult();
+        }
+
+        [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
+        [ProducesResponseType(404)] //NotFound
+        [ProducesResponseType(400)] //Bad Request
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook([FromRoute] int id)
+        {
+            var result = await _bookService.DeleteBook(id);
 
             return result.ToActionResult();
         }

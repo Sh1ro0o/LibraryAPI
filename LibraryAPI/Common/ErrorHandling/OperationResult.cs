@@ -27,40 +27,44 @@ namespace LibraryAPI.Common
             };
         }
 
-        public static OperationResult<T> NotFound(string? message = null)
+        public static OperationResult<T> NotFound(T? data = default, string? message = null)
         {
             return new OperationResult<T>
             {
+                Data = data,
                 IsSuccessful = false,
                 Message = message,
                 ErrorType = OperationErrorType.NotFound
             };
         }
 
-        public static OperationResult<T> Conflict(string? message = null)
+        public static OperationResult<T> Conflict(T? data = default, string? message = null)
         {
             return new OperationResult<T>
             {
+                Data = data,
                 IsSuccessful = false,
                 Message = message,
                 ErrorType = OperationErrorType.Conflict
             };
         }
 
-        public static OperationResult<T> BadRequest(string? message = null)
+        public static OperationResult<T> BadRequest(T? data = default, string? message = null)
         {
             return new OperationResult<T>
             {
+                Data = data,
                 IsSuccessful = false,
                 Message = message,
                 ErrorType = OperationErrorType.BadRequest
             };
         }
 
-        public static OperationResult<T> InternalServerError(string? message = null)
+        public static OperationResult<T> InternalServerError(T? data = default, string? message = null)
         {
             return new OperationResult<T>
             {
+                Data = data,
                 IsSuccessful = false,
                 Message = message,
                 ErrorType = OperationErrorType.InternalServerError

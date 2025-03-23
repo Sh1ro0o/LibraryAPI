@@ -60,7 +60,9 @@ namespace LibraryAPI.Repository
 
         public async Task<Book?> GetById(int id)
         {
-            return await _context.Book.FirstOrDefaultAsync(x => x.RecordId == id);
+            return await _context.Book
+                .Include(x => x.BookAuthors).ThenInclude(x => x.Author)
+                .FirstOrDefaultAsync(x => x.RecordId == id);
         }
 
         public async Task<Book> Create(Book model)

@@ -54,13 +54,13 @@ namespace LibraryAPI.Service
             }
             else
             {
-                return OperationResult<BookDto?>.BadRequest("Error! Please provide a book ISBN or Title.");
+                return OperationResult<BookDto?>.BadRequest(message: "Error! Please provide a book ISBN or Title.");
             }
 
             var existingBook = await _unitOfWork.BookRepository.GetAll(bookFilter).FirstOrDefaultAsync();
             if(existingBook != null)
             {
-                return OperationResult<BookDto?>.Conflict("Error! Book already exists!");
+                return OperationResult<BookDto?>.Conflict(message: "Error! Book already exists!");
             }
 
             //CHECK IF AUTHORS EXIST
@@ -77,7 +77,7 @@ namespace LibraryAPI.Service
 
                 if (!authorsExist)
                 {
-                    return OperationResult<BookDto?>.NotFound("Author Not Found!");
+                    return OperationResult<BookDto?>.NotFound(message: "Author Not Found!");
                 }
             }
 
@@ -100,21 +100,49 @@ namespace LibraryAPI.Service
 
             if (bookWithAuthors == null)
             {
-                return OperationResult<BookDto?>.InternalServerError("Newly created Book not found!");
+                return OperationResult<BookDto?>.InternalServerError(message: "Newly created Book not found!");
             }
 
             var bookDto = bookWithAuthors.ToBookDto();
 
             return OperationResult<BookDto?>.Success(bookDto);
         }
-        public Task<OperationResult<BookDto?>> UpdateBook(SaveBookDto model)
+        public async Task<OperationResult<BookDto?>> UpdateBook(SaveBookDto model)
         {
-            throw new NotImplementedException();
+            //Check if book exists
+            var existingBook = await _unitOfWork.BookRepository.GetById(model.RecordId);
+
+            if (existingBook == null)
+            {
+                return OperationResult<BookDto?>.NotFound(message: "Book Not Found!");
+            }
+
+            existingBook.PublishDate = model.PublishDate;
+            existingBook.Title = model.Title;
+            existingBook.PublishDate = model.PublishDate;
+            existingBook.ISBN = model.ISBN;
+            existingBook.Description = model.Description;
+
+            _unitOfWork.BookRepository.Update(existingBook);
+            await _unitOfWork.Commit();
+
+            return OperationResult<BookDto?>.Success(existingBook.ToBookDto());
         }
 
-        public Task<OperationResult<bool>> DeleteBook(int id)
+        public async Task<OperationResult<bool>> DeleteBook(int id)
         {
-            throw new NotImplementedException();
+            //Check if book exists
+            var existingBook = await _unitOfWork.BookRepository.GetById(id);
+
+            if (existingBook == null)
+            {
+                return OperationResult<bool>.NotFound(message: "Book Not Found!");
+            }
+
+            _unitOfWork.BookRepository.Delete(existingBook);
+            await _unitOfWork.Commit();
+
+            return OperationResult<bool>.Success(data: true);
         }
     }
 }
