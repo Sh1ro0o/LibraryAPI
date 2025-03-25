@@ -15,47 +15,14 @@ namespace LibraryAPI.Repository
             _context = context;
         }
 
-        public IQueryable<Book> GetAll(BookFilter filter)
+        public async Task<List<Book>> GetAll(BookFilter filter)
         {
-            var query = _context.Book.AsQueryable();
+            return await GetBooksFilteredInternal(filter).ToListAsync();
+        }
 
-            if (filter.RecordId != null)
-            {
-                query = query.Where(x => x.RecordId == filter.RecordId);
-            }
-
-            if (!string.IsNullOrWhiteSpace(filter.Title))
-            {
-
-                query = query.Where(x => x.Title == filter.Title);
-            }
-
-            if (filter.PublishDate != null)
-            {
-                query = query.Where(x => x.PublishDate == filter.PublishDate);
-            }
-
-            if (!string.IsNullOrWhiteSpace(filter.ISBN))
-            {
-                query = query.Where(x => x.ISBN == filter.ISBN);
-            }
-
-            //Check if include authors
-            if (filter.IncludeAuthors)
-            {
-                query = query
-                    .Include(x => x.BookAuthors).ThenInclude(x => x.Author);
-            }
-
-            if (filter.PageNumber != null && filter.PageSize != null)
-            {
-                query = query.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1));
-                query = query.Take(filter.PageSize.Value);
-            }
-
-            query = query.OrderByDescending(x => x.RecordId);
-
-            return query;
+        public async Task<Book?> GetOne(BookFilter filter)
+        {
+            return await GetBooksFilteredInternal(filter).FirstOrDefaultAsync();
         }
 
         public async Task<Book?> GetById(int id)
@@ -80,6 +47,52 @@ namespace LibraryAPI.Repository
         public void Delete(Book book)
         {
             _context.Book.Remove(book);
+        }
+
+
+        //Internal Methods
+        private IQueryable<Book> GetBooksFilteredInternal(BookFilter filter)
+        {
+            var query = _context.Book.AsQueryable();
+
+            // Apply filters based on the filter object
+            if (filter.RecordId != null)
+            {
+                query = query.Where(x => x.RecordId == filter.RecordId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Title))
+            {
+                query = query.Where(x => x.Title == filter.Title);
+            }
+
+            if (filter.PublishDate != null)
+            {
+                query = query.Where(x => x.PublishDate == filter.PublishDate);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.ISBN))
+            {
+                query = query.Where(x => x.ISBN == filter.ISBN);
+            }
+
+            // Include authors if requested
+            if (filter.IncludeAuthors)
+            {
+                query = query.Include(x => x.BookAuthors).ThenInclude(x => x.Author);
+            }
+
+            // Apply pagination if provided
+            if (filter.PageNumber != null && filter.PageSize != null)
+            {
+                query = query.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1));
+                query = query.Take(filter.PageSize.Value);
+            }
+
+            // Apply sorting
+            query = query.OrderByDescending(x => x.RecordId);
+
+            return query;
         }
     }
 }

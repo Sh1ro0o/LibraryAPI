@@ -12,16 +12,16 @@ namespace LibraryAPI.Mapper
             {
                 RecordId = book.RecordId,
                 Title = book.Title,
-                PublishDate = book?.PublishDate,
-                ISBN = book?.ISBN,
-                Description = book?.Description,
-                Authors = book?.BookAuthors?
+                PublishDate = book.PublishDate,
+                ISBN = book.ISBN,
+                Description = book.Description,
+                Authors = book.BookAuthors?
                 .Where(x => x.Author != null)
                 .Select(x => new AuthorDto
                 {
                     RecordId = x.Author!.RecordId,
-                    FirstName = x.Author!.FirstName,
-                    LastName = x.Author!.LastName
+                    FirstName = x.Author.FirstName,
+                    LastName = x.Author.LastName
                 })
                 .ToList() ?? new List<AuthorDto>()
             };
@@ -32,9 +32,9 @@ namespace LibraryAPI.Mapper
             return new Book
             {
                 Title = data.Title,
-                PublishDate = data?.PublishDate,
-                ISBN = data?.ISBN,
-                Description = data?.Description
+                PublishDate = data.PublishDate,
+                ISBN = data.ISBN,
+                Description = data.Description
             };
         }
     }

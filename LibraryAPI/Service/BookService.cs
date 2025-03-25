@@ -20,7 +20,7 @@ namespace LibraryAPI.Service
 
         public async Task<OperationResult<IEnumerable<BookDto>>> GetAll(BookFilter filter)
         {
-            var books = await _unitOfWork.BookRepository.GetAll(filter).ToListAsync();
+            var books = await _unitOfWork.BookRepository.GetAll(filter);
 
             var booksDto = books.Select(x => x.ToBookDto());
             
@@ -57,7 +57,7 @@ namespace LibraryAPI.Service
                 return OperationResult<BookDto?>.BadRequest(message: "Error! Please provide a book ISBN or Title.");
             }
 
-            var existingBook = await _unitOfWork.BookRepository.GetAll(bookFilter).FirstOrDefaultAsync();
+            var existingBook = await _unitOfWork.BookRepository.GetOne(bookFilter);
             if(existingBook != null)
             {
                 return OperationResult<BookDto?>.Conflict(message: "Error! Book already exists!");
@@ -67,11 +67,7 @@ namespace LibraryAPI.Service
             bool authorsExist = false;
             if (!model.AuthorIds.IsNullOrEmpty())
             {
-                var existingAuthors = await _unitOfWork.AuthorRepository
-                    .GetAll(new AuthorFilter())
-                    .Where(x => model.AuthorIds.Contains(x.RecordId))
-                    .Distinct()
-                    .ToListAsync();
+                var existingAuthors = await _unitOfWork.AuthorRepository.CheckIfAuthorsExist(model.AuthorIds!);
 
                 authorsExist = existingAuthors.Count == model.AuthorIds.Count;
 
@@ -93,10 +89,7 @@ namespace LibraryAPI.Service
             await _unitOfWork.Commit();
 
             //RETURN NEWLY CREATED BOOK WITH AUTHORS
-            var bookWithAuthors = await _unitOfWork.BookRepository.GetAll(new BookFilter()
-            {
-                RecordId = newBook.RecordId
-            }).FirstOrDefaultAsync();
+            var bookWithAuthors = await _unitOfWork.BookRepository.GetById(newBook.RecordId);
 
             if (bookWithAuthors == null)
             {

@@ -6,7 +6,8 @@ namespace LibraryAPI.Interface
 {
     public interface IBookRepository
     {
-        IQueryable<Book> GetAll(BookFilter filter);
+        Task<List<Book>> GetAll(BookFilter filter);
+        Task<Book?> GetOne(BookFilter filter);
         Task<Book?> GetById(int id);
         Task<Book> Create(Book model);
         void Update(Book book);
