@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Dto.Author;
 using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
@@ -16,7 +17,7 @@ namespace LibraryAPI.Controllers
             _authorService = authorService;
         }
 
-        [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<BookDto>>))]
+        [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<AuthorDto>>))]
         [ProducesResponseType(500)]
         [HttpGet("allAuthors")]
         public async Task<IActionResult> GetAllAuthors([FromQuery] AuthorFilter filter)
@@ -24,6 +25,42 @@ namespace LibraryAPI.Controllers
             var authors = await _authorService.GetAll(filter);
 
             return authors.ToActionResult();
+        }
+
+        [ProducesResponseType(200, Type = typeof(ResponseObject<AuthorDto>))] //OK
+        [ProducesResponseType(404)] //NotFound
+        [ProducesResponseType(400)] //Bad Request
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpPost]
+        public async Task<IActionResult> CreateAuthor([FromBody] CreateAuthorDto model)
+        {
+            var author = await _authorService.CreateAuthor(model);
+
+            return author.ToActionResult();
+        }
+
+        [ProducesResponseType(200, Type = typeof(ResponseObject<AuthorDto>))] //OK
+        [ProducesResponseType(404)] //NotFound
+        [ProducesResponseType(400)] //Bad Request
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpPut]
+        public async Task<IActionResult> UpdateAuthor([FromBody] SaveAuthorDto model)
+        {
+            var author = await _authorService.UpdateAuthor(model);
+
+            return author.ToActionResult();
+        }
+
+        [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
+        [ProducesResponseType(404)] //NotFound
+        [ProducesResponseType(400)] //Bad Request
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAuthor([FromRoute] int id)
+        {
+            var result = await _authorService.DeleteAuthor(id);
+
+            return result.ToActionResult();
         }
     }
 }
