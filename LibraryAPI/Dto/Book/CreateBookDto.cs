@@ -1,5 +1,4 @@
-﻿using LibraryAPI.Dto.Author;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LibraryAPI.Dto.Book
 {

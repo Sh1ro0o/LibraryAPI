@@ -4,8 +4,6 @@ using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
 using LibraryAPI.Mapper;
 using LibraryAPI.UnitOfWork;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryAPI.Service

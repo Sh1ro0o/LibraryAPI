@@ -1,6 +1,4 @@
-﻿using LibraryAPI.Model;
-
-namespace LibraryAPI.Filters
+﻿namespace LibraryAPI.Filters
 {
     public class BookCopyFilter
     {

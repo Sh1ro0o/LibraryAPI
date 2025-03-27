@@ -3,7 +3,6 @@ using LibraryAPI.Filters;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace LibraryAPI.Repository
 {

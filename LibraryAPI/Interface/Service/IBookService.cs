@@ -1,7 +1,6 @@
 ﻿using LibraryAPI.Common;
 using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
-using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Interface.Service
 {

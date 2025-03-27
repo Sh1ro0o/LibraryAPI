@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace LibraryAPI.Model
+﻿namespace LibraryAPI.Model
 {
     public class BookAuthor
     {

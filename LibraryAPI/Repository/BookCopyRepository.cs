@@ -1,11 +1,8 @@
 ﻿using LibraryAPI.Data;
-using LibraryAPI.Dto.Book;
-using LibraryAPI.Dto.BookCopy;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
 
 namespace LibraryAPI.Repository
 {

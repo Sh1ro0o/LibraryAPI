@@ -1,5 +1,4 @@
-﻿using LibraryAPI.Dto;
-using LibraryAPI.Filters;
+﻿using LibraryAPI.Filters;
 using LibraryAPI.Model;
 
 namespace LibraryAPI.Interface

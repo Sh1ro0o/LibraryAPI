@@ -1,6 +1,4 @@
-﻿using LibraryAPI.Dto.Book;
-using LibraryAPI.Dto.BookCopy;
-using LibraryAPI.Filters;
+﻿using LibraryAPI.Filters;
 using LibraryAPI.Model;
 
 namespace LibraryAPI.Interface.Repository
