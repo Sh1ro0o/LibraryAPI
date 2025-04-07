@@ -8,7 +8,8 @@ namespace LibraryAPI.Model
         [Key]
         [Column("Id")]
         public int RecordId { get; set; }
-        public required string SerialNumber { get; set; } //Scan books when borrowing/returning
+        [Required(AllowEmptyStrings = false)]
+        public string SerialNumber { get; set; } = string.Empty; //Scan books when borrowing/returning
         public bool IsAvailable { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
