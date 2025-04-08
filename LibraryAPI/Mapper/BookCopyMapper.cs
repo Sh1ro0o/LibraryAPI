@@ -22,7 +22,6 @@ namespace LibraryAPI.Mapper
         {
             return new BookCopy
             {
-                IsAvailable = model.IsAvailable,
                 BookId = model.BookId
             };
         }

@@ -30,7 +30,7 @@ namespace LibraryAPI.Service
             //User must provide at least a first name or last name
             if (string.IsNullOrWhiteSpace(model.FirstName) && string.IsNullOrWhiteSpace(model.LastName))
             {
-                return OperationResult<AuthorDto?>.BadRequest(message: "Please provide a First name or Last name of Author!");
+                return OperationResult<AuthorDto?>.BadRequest(message: "Please provide a First name or Last name for Author!");
             }
 
             var author = await _unitOfWork.AuthorRepository.CreateAuthor(model.ToAuthorFromCreateDto());

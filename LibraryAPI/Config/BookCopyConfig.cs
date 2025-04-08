@@ -16,6 +16,7 @@ namespace LibraryAPI.Config
             builder.Property(x => x.ModifiedDate).HasColumnName("ModifiedDate").HasColumnType("datetime").IsRequired(false);
 
             builder.Property(x => x.BookId).HasColumnName("BookId").HasColumnType("int");
+
             builder.HasOne(x => x.Book);
         }
     }

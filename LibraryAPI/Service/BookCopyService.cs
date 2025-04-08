@@ -1,0 +1,101 @@
+﻿using LibraryAPI.Common;
+using LibraryAPI.Common.Response;
+using LibraryAPI.Dto.BookCopy;
+using LibraryAPI.Filters;
+using LibraryAPI.Interface.Service;
+using LibraryAPI.Interface.Utility;
+using LibraryAPI.Mapper;
+using LibraryAPI.UnitOfWork;
+
+namespace LibraryAPI.Service
+{
+    public class BookCopyService : IBookCopyService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ISerialNumberGenerator _serialNumberGenerator;
+        public BookCopyService(IUnitOfWork unitOfWork, ISerialNumberGenerator serialNumberGenerator)
+        {
+            _unitOfWork = unitOfWork;
+            _serialNumberGenerator = serialNumberGenerator;
+        }
+
+        public async Task<OperationResult<IEnumerable<BookCopyDto>>> GetAll(BookCopyFilter filter)
+        {
+            var bookCopies = await _unitOfWork.BookCopyRepository.GetAll(filter);
+            var bookCopiesDto = bookCopies.Select(x => x.ToBookCopyDto());
+
+            return OperationResult<IEnumerable<BookCopyDto>>.Success(bookCopiesDto);
+        }
+
+        public async Task<OperationResult<BookCopyDto?>> GetById(int id)
+        {
+            var bookCopy = await _unitOfWork.BookCopyRepository.GetById(id);
+
+            if (bookCopy == null)
+            {
+                return OperationResult<BookCopyDto?>.NotFound(message: $"BookCopy with Id: {id} not found!");
+            }
+
+            return OperationResult<BookCopyDto?>.Success(bookCopy.ToBookCopyDto());
+        }
+
+        public async Task<OperationResult<BookCopyDto?>> CreateBookCopy(CreateBookCopyDto model)
+        {
+            var newBookCopy = model.ToBookCopyFromCreateDto();
+
+            newBookCopy.IsAvailable = true;
+            newBookCopy.CreateDate = DateTime.UtcNow;
+            newBookCopy.ModifiedDate = DateTime.UtcNow;
+            newBookCopy.SerialNumber = _serialNumberGenerator.GenereateBookCopySerialNumber();
+
+            await _unitOfWork.BookCopyRepository.Create(newBookCopy);
+            await _unitOfWork.Commit();
+
+            return OperationResult<BookCopyDto?>.Success(newBookCopy.ToBookCopyDto());
+        }
+
+        public async Task<OperationResult<BookCopyDto?>> UpdateBookCopy(SaveBookCopyDto model)
+        {
+            //Check if bookcopy exists
+            var bookCopy = await _unitOfWork.BookCopyRepository.GetById(model.RecordId);
+
+            if(bookCopy == null)
+            {
+                return OperationResult<BookCopyDto?>.NotFound(message: $"BookCopy with Id: {model.RecordId} not found!");
+            }
+
+            //Update book
+            bookCopy.ModifiedDate = DateTime.UtcNow;
+
+            if (model.IsAvailable is bool isAvailable)
+            {
+                bookCopy.IsAvailable = isAvailable;
+            }
+            if (model.BookId is int bookId)
+            {
+                bookCopy.BookId = bookId;
+            }
+
+            _unitOfWork.BookCopyRepository.Update(bookCopy);
+            await _unitOfWork.Commit();
+
+            return OperationResult<BookCopyDto?>.Success(bookCopy.ToBookCopyDto());
+        }
+
+        public async Task<OperationResult<bool>> DeleteBookCopy(int id)
+        {
+            //Check if bookcopy exists
+            var bookCopy = await _unitOfWork.BookCopyRepository.GetById(id);
+
+            if (bookCopy == null)
+            {
+                return OperationResult<bool>.NotFound(message: $"BookCopy with Id: {id} not found!");
+            }
+
+            _unitOfWork.BookCopyRepository.Delete(bookCopy);
+            await _unitOfWork.Commit();
+
+            return OperationResult<bool>.Success(true);
+        }
+    }
+}

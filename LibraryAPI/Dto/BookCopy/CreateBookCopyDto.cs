@@ -1,8 +1,10 @@
-﻿namespace LibraryAPI.Dto.BookCopy
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LibraryAPI.Dto.BookCopy
 {
     public class CreateBookCopyDto
     {
-        public bool IsAvailable { get; set; }
-        public int BookId { get; set; }
+        [Required]
+        public required int BookId { get; set; }
     }
 }

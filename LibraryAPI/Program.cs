@@ -2,9 +2,11 @@ using LibraryAPI.Data;
 using LibraryAPI.Interface;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Interface.Service;
+using LibraryAPI.Interface.Utility;
 using LibraryAPI.Repository;
 using LibraryAPI.Service;
 using LibraryAPI.UnitOfWork;
+using LibraryAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,10 @@ builder.Services.AddScoped<IBookCopyRepository, BookCopyRepository>();
 //Service
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookCopyService, BookCopyService>();
+
+//Utility
+builder.Services.AddScoped<ISerialNumberGenerator, SerialNumberGenerator>();
 
 // Add services to the container.
 builder.Services.AddControllers();
