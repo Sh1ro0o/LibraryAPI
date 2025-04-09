@@ -1,5 +1,6 @@
 ﻿using LibraryAPI.Dto.Author;
 using LibraryAPI.Dto.Book;
+using LibraryAPI.Dto.Genre;
 using LibraryAPI.Model;
 
 namespace LibraryAPI.Mapper
@@ -23,7 +24,15 @@ namespace LibraryAPI.Mapper
                     FirstName = x.Author.FirstName,
                     LastName = x.Author.LastName
                 })
-                .ToList() ?? new List<AuthorDto>()
+                .ToList() ?? new List<AuthorDto>(),
+                Genres = book.BookGenres?
+                .Where(x => x.Genre != null)
+                .Select(x => new GenreDto
+                {
+                    RecordId = x.Genre!.RecordId,
+                    Name = x.Genre.Name,
+                    Description = x.Genre.Description
+                }).ToList() ?? new List<GenreDto>()
             };
         }
 

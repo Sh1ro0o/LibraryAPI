@@ -12,6 +12,8 @@ namespace LibraryAPI.UnitOfWork
         private IAuthorRepository _authorRepository;
         private IBookAuthorRepository _bookAuthorRepository;
         private IBookCopyRepository _bookCopyRepository;
+        private IGenreRepository _genreRepository;
+        private IBookGenreRepository _bookGenreRepository;
 
         public UnitOfWork(LibraryDbContext context)
         {
@@ -22,6 +24,9 @@ namespace LibraryAPI.UnitOfWork
         public IAuthorRepository AuthorRepository => _authorRepository ??= new AuthorRepository(_context);
         public IBookAuthorRepository BookAuthorRepository => _bookAuthorRepository ??= new BookAuthorRepository(_context);
         public IBookCopyRepository BookCopyRepository => _bookCopyRepository ??= new BookCopyRepository(_context);
+        public IGenreRepository GenreRepository => _genreRepository ??= new GenreRepository(_context);
+        public IBookGenreRepository BookGenreRepository => _bookGenreRepository ??= new BookGenreRepository(_context);
+
 
         public async Task<int> Commit()
         {

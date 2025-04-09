@@ -15,11 +15,11 @@ namespace LibraryAPI.Repository
 
         public async Task<List<BookAuthor>> CreateBookAuthorConnections(Book book, List<int> authorIds)
         {
-            var bookAuthors = (authorIds.Select(x => new BookAuthor 
+            var bookAuthors = authorIds.Select(x => new BookAuthor 
             {
                 Book = book,
                 AuthorId = x
-            }).ToList());
+            }).ToList();
 
             await _context.BookAuthor.AddRangeAsync(bookAuthors);
 

@@ -28,6 +28,7 @@ namespace LibraryAPI.Repository
         {
             return await _context.Book
                 .Include(x => x.BookAuthors).ThenInclude(x => x.Author)
+                .Include(x => x.BookGenres).ThenInclude(x => x.Genre)
                 .FirstOrDefaultAsync(x => x.RecordId == id);
         }
 
@@ -79,6 +80,12 @@ namespace LibraryAPI.Repository
             if (filter.IncludeAuthors)
             {
                 query = query.Include(x => x.BookAuthors).ThenInclude(x => x.Author);
+            }
+
+            // Include genres if requested
+            if (filter.IncludeGenres)
+            {
+                query = query.Include(x => x.BookGenres).ThenInclude(x => x.Genre);
             }
 
             // Apply pagination if provided

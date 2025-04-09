@@ -3,6 +3,7 @@ using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
 using LibraryAPI.Mapper;
+using LibraryAPI.Model;
 using LibraryAPI.UnitOfWork;
 using Microsoft.IdentityModel.Tokens;
 
@@ -75,6 +76,20 @@ namespace LibraryAPI.Service
                 }
             }
 
+            //CHECK IF GENRES EXIST
+            bool genresExist = false;
+            if (!model.GenreIds.IsNullOrEmpty())
+            {
+                var existingGenres = await _unitOfWork.GenreRepository.CheckIfGenresExist(model.GenreIds!);
+
+                genresExist = existingGenres.Count == model.GenreIds.Count;
+
+                if (!genresExist)
+                {
+                    return OperationResult<BookDto?>.NotFound(message: "Genre Not Found!");
+                }
+            }
+
             //CREATE BOOK
             var newBook = await _unitOfWork.BookRepository.Create(model.ToBookFromCreateDto());
 
@@ -82,6 +97,12 @@ namespace LibraryAPI.Service
             if (authorsExist)
             {
                 var bookAuthors = await _unitOfWork.BookAuthorRepository.CreateBookAuthorConnections(newBook, model.AuthorIds);
+            }
+
+            //CREATE BOOKGENRE CONNECTIONS
+            if (genresExist)
+            {
+                var bookGenres = await _unitOfWork.BookGenreRepository.CreateBookGenreConnections(newBook, model.GenreIds);
             }
 
             await _unitOfWork.Commit();

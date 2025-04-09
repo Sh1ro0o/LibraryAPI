@@ -14,5 +14,6 @@ namespace LibraryAPI.Model
         public string? Description { get; set; }
 
         public ICollection<BookAuthor> BookAuthors { get; set; } = new List<BookAuthor>();
+        public ICollection<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Dto.Author;
+using LibraryAPI.Dto.Genre;
 
 namespace LibraryAPI.Dto.Book
 {
@@ -10,5 +11,6 @@ namespace LibraryAPI.Dto.Book
         public string? ISBN { get; set; }
         public string? Description { get; set; }
         public List<AuthorDto>? Authors { get; set; } = new List<AuthorDto>();
+        public List<GenreDto>? Genres { get; set; } = new List<GenreDto>();
     }
 }

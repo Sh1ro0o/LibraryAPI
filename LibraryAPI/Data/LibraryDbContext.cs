@@ -12,6 +12,8 @@ namespace LibraryAPI.Data
         public DbSet<BookCopy> BookCopy { get; set; }
         public DbSet<Author> Author { get; set; }
         public DbSet<BookAuthor> BookAuthor { get; set; }
+        public DbSet<Genre> Genre { get; set; }
+        public DbSet<BookGenre> BookGenre { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -16,6 +16,7 @@ namespace LibraryAPI.Config
             builder.Property(x => x.Description).HasColumnName("Description").HasColumnType("nvarchar(2000)").IsRequired(false);
 
             builder.HasMany(x => x.BookAuthors);
+            builder.HasMany(x => x.BookGenres);
         }
     }
 }

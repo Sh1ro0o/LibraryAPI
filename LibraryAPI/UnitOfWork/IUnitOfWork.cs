@@ -9,6 +9,8 @@ namespace LibraryAPI.UnitOfWork
         IAuthorRepository AuthorRepository { get; }
         IBookAuthorRepository BookAuthorRepository { get; }
         IBookCopyRepository BookCopyRepository { get; }
+        IGenreRepository GenreRepository { get; }
+        IBookGenreRepository BookGenreRepository { get; }
 
         Task<int> Commit();
     }
