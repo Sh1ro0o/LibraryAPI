@@ -96,13 +96,25 @@ namespace LibraryAPI.Service
             //CREATE BOOKAUTHOR CONNECTIONS
             if (authorsExist)
             {
-                var bookAuthors = await _unitOfWork.BookAuthorRepository.CreateBookAuthorConnections(newBook, model.AuthorIds);
+                var bookAuthors = model.AuthorIds.Select(x => new BookAuthor
+                {
+                    Book = newBook,
+                    AuthorId = x
+                }).ToList();
+
+                await _unitOfWork.BookAuthorRepository.AddRange(bookAuthors);
             }
 
             //CREATE BOOKGENRE CONNECTIONS
             if (genresExist)
             {
-                var bookGenres = await _unitOfWork.BookGenreRepository.CreateBookGenreConnections(newBook, model.GenreIds);
+                var bookGenres = model.GenreIds.Select(x => new BookGenre
+                {
+                    Book = newBook,
+                    GenreId = x
+                }).ToList();
+
+                await _unitOfWork.BookGenreRepository.AddRange(bookGenres);
             }
 
             await _unitOfWork.Commit();
@@ -115,8 +127,8 @@ namespace LibraryAPI.Service
                 return OperationResult<BookDto?>.InternalServerError(message: "Newly created Book not found!");
             }
 
+            //RETURN SUCCESS
             var bookDto = bookWithAuthors.ToBookDto();
-
             return OperationResult<BookDto?>.Success(bookDto);
         }
         public async Task<OperationResult<BookDto?>> UpdateBook(SaveBookDto model)

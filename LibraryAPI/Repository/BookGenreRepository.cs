@@ -1,6 +1,7 @@
 ﻿using LibraryAPI.Data;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Repository
 {
@@ -12,17 +13,35 @@ namespace LibraryAPI.Repository
             _context = context;
         }
 
-        public async Task<List<BookGenre>> CreateBookGenreConnections(Book book, List<int> genreIds)
+        #region GET Methods
+
+        public async Task<List<BookGenre>> GetByBookId(int bookId)
         {
-            var bookGenres = genreIds.Select(x => new BookGenre
-            {
-                Book = book,
-                GenreId = x
-            }).ToList();
+            var existingBookGenres = await _context.BookGenre
+                .Where(x => x.BookId == bookId)
+                .ToListAsync();
 
-            await _context.BookGenre.AddRangeAsync(bookGenres);
-
-            return bookGenres;
+            return existingBookGenres;
         }
+
+        #endregion
+
+        #region CREATE Methods
+
+        public async Task AddRange(List<BookGenre> bookGenres)
+        {
+            await _context.BookGenre.AddRangeAsync(bookGenres);
+        }
+
+        #endregion
+
+        #region DELETE Methods
+
+        public void DeleteRange(List<BookGenre> bookGenres)
+        {
+            _context.BookGenre.RemoveRange(bookGenres);
+        }
+
+        #endregion
     }
 }
