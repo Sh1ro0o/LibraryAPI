@@ -28,6 +28,7 @@ builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
 //Service
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
+builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 
 //Utility
