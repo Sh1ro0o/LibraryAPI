@@ -30,6 +30,7 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
+builder.Services.AddScoped<IBookGenreService, BookGenreService>();
 
 //Utility
 builder.Services.AddScoped<ISerialNumberGenerator, SerialNumberGenerator>();

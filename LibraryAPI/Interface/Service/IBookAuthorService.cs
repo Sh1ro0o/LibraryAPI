@@ -1,6 +1,5 @@
 ﻿using LibraryAPI.Common;
 using LibraryAPI.Dto.BookAuthor;
-using LibraryAPI.Model;
 
 namespace LibraryAPI.Interface.Service
 {
