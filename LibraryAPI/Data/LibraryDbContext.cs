@@ -1,10 +1,11 @@
 ﻿using LibraryAPI.Config;
 using LibraryAPI.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Data
 {
-    public class LibraryDbContext : DbContext
+    public class LibraryDbContext : IdentityDbContext<AppUser>
     {
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options) : base(options) { }
 
@@ -18,6 +19,7 @@ namespace LibraryAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LibraryDbContext).Assembly);
         }
     }
