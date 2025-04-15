@@ -131,6 +131,7 @@ namespace LibraryAPI.Service
             var bookDto = bookWithAuthors.ToBookDto();
             return OperationResult<BookDto?>.Success(bookDto);
         }
+
         public async Task<OperationResult<BookDto?>> UpdateBook(SaveBookDto model)
         {
             //Check if book exists
