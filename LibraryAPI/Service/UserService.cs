@@ -12,18 +12,20 @@ namespace LibraryAPI.Service
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
-        public UserService(UserManager<AppUser> userManager)
+        private readonly ITokenService _tokenService;
+        public UserService(UserManager<AppUser> userManager, ITokenService tokenService)
         {
             _userManager = userManager;
+            _tokenService = tokenService;
         }
 
-        public async Task<OperationResult<bool>> UserRegister(RegisterDto model)
+        public async Task<OperationResult<UserDto?>> UserRegister(RegisterDto model)
         {
             //Check if user with Email already exists
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
             {
-                return OperationResult<bool>.Conflict(false, "A user with this email already exists.");
+                return OperationResult<UserDto?>.Conflict(message: "A user with this email already exists.");
             }
 
             var newUser = new AppUser
@@ -39,19 +41,25 @@ namespace LibraryAPI.Service
                 var roleResult = await _userManager.AddToRoleAsync(newUser, Roles.User);
                 if (roleResult.Succeeded)
                 {
+                    var newUserDto = new UserDto
+                    {
+                        Email = model.Email,
+                        Token = _tokenService.CreateToken(newUser)
+                    };
+
                     //Return success
-                    return OperationResult<bool>.Success(true);
+                    return OperationResult<UserDto?>.Success(newUserDto);
                 }
                 else
                 {
                     //Return internal server error
-                    return OperationResult<bool>.InternalServerError(false, GetIdentityErrors(roleResult.Errors));
+                    return OperationResult<UserDto?>.InternalServerError(message: GetIdentityErrors(roleResult.Errors));
                 }
             }
             else
             {
                 //return internal server error
-                return OperationResult<bool>.InternalServerError(false, GetIdentityErrors(createdUser.Errors));
+                return OperationResult<UserDto?>.InternalServerError(message: GetIdentityErrors(createdUser.Errors));
             }
         }
 

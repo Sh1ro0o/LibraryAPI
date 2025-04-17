@@ -5,6 +5,6 @@ namespace LibraryAPI.Interface.Service
 {
     public interface IUserService
     {
-        Task<OperationResult<bool>> UserRegister(RegisterDto model);
+        Task<OperationResult<UserDto?>> UserRegister(RegisterDto model);
     }
 }

@@ -69,6 +69,7 @@ builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IBookGenreService, BookGenreService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

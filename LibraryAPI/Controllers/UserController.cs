@@ -18,7 +18,7 @@ namespace LibraryAPI.Controllers
             _userService = userService;
         }
 
-        [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
+        [ProducesResponseType(200, Type = typeof(ResponseObject<UserDto?>))] //OK
         [ProducesResponseType(400)] //Bad Request
         [ProducesResponseType(500)] //Internal Server Error
         [HttpPost("Register")]
