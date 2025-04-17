@@ -7,7 +7,6 @@ using LibraryAPI.Model;
 using LibraryAPI.Repository;
 using LibraryAPI.Service;
 using LibraryAPI.UnitOfWork;
-using LibraryAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +48,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
-        ) 
+        )
     };
 });
 
@@ -69,9 +68,7 @@ builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IBookGenreService, BookGenreService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
-//Utility
-builder.Services.AddScoped<ISerialNumberGenerator, SerialNumberGenerator>();
+builder.Services.AddScoped<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
 
 // Add services to the container.
 builder.Services.AddControllers();

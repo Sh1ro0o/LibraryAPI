@@ -1,8 +1,8 @@
 ﻿using LibraryAPI.Interface.Utility;
 
-namespace LibraryAPI.Utility
+namespace LibraryAPI.Service
 {
-    public class SerialNumberGenerator : ISerialNumberGenerator
+    public class SerialNumberGeneratorService : ISerialNumberGeneratorService
     {
         //Format: SN-20250407-9F4C2A
         public string GenereateBookCopySerialNumber()

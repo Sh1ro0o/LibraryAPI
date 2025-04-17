@@ -12,11 +12,11 @@ namespace LibraryAPI.Service
     public class BookCopyService : IBookCopyService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ISerialNumberGenerator _serialNumberGenerator;
-        public BookCopyService(IUnitOfWork unitOfWork, ISerialNumberGenerator serialNumberGenerator)
+        private readonly ISerialNumberGeneratorService _serialNumberGeneratorService;
+        public BookCopyService(IUnitOfWork unitOfWork, ISerialNumberGeneratorService serialNumberGeneratorService)
         {
             _unitOfWork = unitOfWork;
-            _serialNumberGenerator = serialNumberGenerator;
+            _serialNumberGeneratorService = serialNumberGeneratorService;
         }
 
         public async Task<OperationResult<IEnumerable<BookCopyDto>>> GetAll(BookCopyFilter filter)
@@ -46,7 +46,7 @@ namespace LibraryAPI.Service
             newBookCopy.IsAvailable = true;
             newBookCopy.CreateDate = DateTime.UtcNow;
             newBookCopy.ModifiedDate = DateTime.UtcNow;
-            newBookCopy.SerialNumber = _serialNumberGenerator.GenereateBookCopySerialNumber();
+            newBookCopy.SerialNumber = _serialNumberGeneratorService.GenereateBookCopySerialNumber();
 
             await _unitOfWork.BookCopyRepository.Create(newBookCopy);
             await _unitOfWork.Commit();

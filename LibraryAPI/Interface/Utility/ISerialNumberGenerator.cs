@@ -1,6 +1,6 @@
 ﻿namespace LibraryAPI.Interface.Utility
 {
-    public interface ISerialNumberGenerator
+    public interface ISerialNumberGeneratorService
     {
         string GenereateBookCopySerialNumber();
     }
