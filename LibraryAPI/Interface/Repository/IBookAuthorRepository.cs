@@ -4,8 +4,8 @@ namespace LibraryAPI.Interface.Repository
 {
     public interface IBookAuthorRepository
     {
-        Task<List<BookAuthor>> GetByBookId(int bookId);
-        Task AddRange(List<BookAuthor> bookAuthors);
-        void DeleteRange(List<BookAuthor> bookAuthors);
+        Task<ICollection<BookAuthor>> GetByBookId(int bookId);
+        Task AddRange(ICollection<BookAuthor> bookAuthors);
+        void DeleteRange(ICollection<BookAuthor> bookAuthors);
     }
 }

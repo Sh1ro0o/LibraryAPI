@@ -15,7 +15,7 @@ namespace LibraryAPI.Repository
         }
 
         #region GET Methods
-        public Task<List<Author>> GetAll(AuthorFilter filter)
+        public async Task<ICollection<Author>> GetAll(AuthorFilter filter)
         {
             var query = _context.Author.AsQueryable();
 
@@ -47,7 +47,7 @@ namespace LibraryAPI.Repository
 
             query = query.OrderByDescending(x => x.RecordId);
 
-            return query.ToListAsync();
+            return await query.ToListAsync();
         }
 
         public async Task<Author?> GetById(int id)
@@ -55,7 +55,7 @@ namespace LibraryAPI.Repository
             return await _context.Author.FirstOrDefaultAsync(x => x.RecordId == id);
         }
 
-        public async Task<List<Author>> CheckIfAuthorsExist(List<int> authorIds)
+        public async Task<ICollection<Author>> CheckIfAuthorsExist(ICollection<int> authorIds)
         {
             var existingAuthors = await _context.Author
                 .Where(x => authorIds.Contains(x.RecordId))

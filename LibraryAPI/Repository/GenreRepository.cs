@@ -16,7 +16,7 @@ namespace LibraryAPI.Repository
 
         #region GET Methods
 
-        public async Task<List<Genre>> GetAll(GenreFilter filter)
+        public async Task<ICollection<Genre>> GetAll(GenreFilter filter)
         {
             return await GetGenresFilteredInternal(filter).ToListAsync();
         }
@@ -31,7 +31,7 @@ namespace LibraryAPI.Repository
             return await _context.Genre.FirstOrDefaultAsync(x => x.RecordId == id);
         }
 
-        public async Task<List<Genre>> CheckIfGenresExist(List<int> genreIds)
+        public async Task<ICollection<Genre>> CheckIfGenresExist(List<int> genreIds)
         {
             var existingGenres = await _context.Genre
                 .Where(x => genreIds.Contains(x.RecordId))

@@ -17,7 +17,7 @@ namespace LibraryAPI.Repository
 
         #region GET Methods
 
-        public async Task<List<BookAuthor>> GetByBookId(int bookId)
+        public async Task<ICollection<BookAuthor>> GetByBookId(int bookId)
         {
             var existingBookAuthors = await _context.BookAuthor
                 .Where(x => x.BookId == bookId)
@@ -30,7 +30,7 @@ namespace LibraryAPI.Repository
 
         #region CREATE Methods
 
-        public async Task AddRange(List<BookAuthor> bookAuthors)
+        public async Task AddRange(ICollection<BookAuthor> bookAuthors)
         {
             await _context.BookAuthor.AddRangeAsync(bookAuthors);
         }
@@ -39,7 +39,7 @@ namespace LibraryAPI.Repository
 
         #region DELETE Methods
 
-        public void DeleteRange(List<BookAuthor> bookAuthors)
+        public void DeleteRange(ICollection<BookAuthor> bookAuthors)
         {
             _context.BookAuthor.RemoveRange(bookAuthors);
         }

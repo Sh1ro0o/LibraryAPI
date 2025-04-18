@@ -14,7 +14,7 @@ namespace LibraryAPI.Repository
             _context = context;
         }
 
-        public async Task<List<Book>> GetAll(BookFilter filter)
+        public async Task<ICollection<Book>> GetAll(BookFilter filter)
         {
             return await GetBooksFilteredInternal(filter).ToListAsync();
         }

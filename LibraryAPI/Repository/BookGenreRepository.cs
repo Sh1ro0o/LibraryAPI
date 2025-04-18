@@ -15,7 +15,7 @@ namespace LibraryAPI.Repository
 
         #region GET Methods
 
-        public async Task<List<BookGenre>> GetByBookId(int bookId)
+        public async Task<ICollection<BookGenre>> GetByBookId(int bookId)
         {
             var existingBookGenres = await _context.BookGenre
                 .Where(x => x.BookId == bookId)
@@ -28,7 +28,7 @@ namespace LibraryAPI.Repository
 
         #region CREATE Methods
 
-        public async Task AddRange(List<BookGenre> bookGenres)
+        public async Task AddRange(ICollection<BookGenre> bookGenres)
         {
             await _context.BookGenre.AddRangeAsync(bookGenres);
         }
@@ -37,7 +37,7 @@ namespace LibraryAPI.Repository
 
         #region DELETE Methods
 
-        public void DeleteRange(List<BookGenre> bookGenres)
+        public void DeleteRange(ICollection<BookGenre> bookGenres)
         {
             _context.BookGenre.RemoveRange(bookGenres);
         }

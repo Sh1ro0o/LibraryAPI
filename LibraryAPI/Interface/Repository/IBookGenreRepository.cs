@@ -4,8 +4,8 @@ namespace LibraryAPI.Interface.Repository
 {
     public interface IBookGenreRepository
     {
-        Task<List<BookGenre>> GetByBookId(int bookId);
-        Task AddRange(List<BookGenre> bookGenres);
-        void DeleteRange(List<BookGenre> bookGenres);
+        Task<ICollection<BookGenre>> GetByBookId(int bookId);
+        Task AddRange(ICollection<BookGenre> bookGenres);
+        void DeleteRange(ICollection<BookGenre> bookGenres);
     }
 }

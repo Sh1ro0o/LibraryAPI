@@ -17,7 +17,7 @@ namespace LibraryAPI.Repository
 
         #region GET methods
 
-        public async Task<List<BookCopy>> GetAll(BookCopyFilter filter)
+        public async Task<ICollection<BookCopy>> GetAll(BookCopyFilter filter)
         {
             return await GetFilteredBookCopiesInternal(filter).ToListAsync();
         }
