@@ -12,11 +12,13 @@ namespace LibraryAPI.Service
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
-        public UserService(UserManager<AppUser> userManager, ITokenService tokenService)
+        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signinManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
+            _signInManager = signinManager;
         }
 
         public async Task<OperationResult<UserDto?>> UserRegister(RegisterDto model)
@@ -61,6 +63,32 @@ namespace LibraryAPI.Service
                 //return internal server error
                 return OperationResult<UserDto?>.InternalServerError(message: GetIdentityErrors(createdUser.Errors));
             }
+        }
+
+        public async Task<OperationResult<UserDto?>> UserLogin(LoginDto model)
+        {
+            //Check if user with Email exists
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return OperationResult<UserDto?>.BadRequest(message: "Invalid email or password.");
+            }
+
+            //Try to login
+            var userLogin = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+
+            if (userLogin.Succeeded)
+            {
+                var userDto = new UserDto { 
+                    Email = model.Email,
+                    Token = _tokenService.CreateToken(user)
+                };
+
+                return OperationResult<UserDto?>.Success(userDto);
+            }
+
+            return OperationResult<UserDto?>.BadRequest(message: "Invalid email or password.");
         }
 
         #region PRIVATE Methods

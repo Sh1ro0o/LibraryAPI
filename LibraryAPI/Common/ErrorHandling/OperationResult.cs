@@ -60,6 +60,17 @@ namespace LibraryAPI.Common
             };
         }
 
+        public static OperationResult<T> Unauthorized(T? data = default, string? message = null)
+        {
+            return new OperationResult<T>
+            {
+                Data = data,
+                IsSuccessful = false,
+                Message = message,
+                ErrorType = OperationErrorType.UnAuthorized
+            };
+        }
+
         public static OperationResult<T> InternalServerError(T? data = default, string? message = null)
         {
             return new OperationResult<T>

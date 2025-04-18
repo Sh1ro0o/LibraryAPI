@@ -38,6 +38,10 @@ public static class OperationResultExtensions
                 result = new BadRequestObjectResult(resObj);
                 break;
 
+            case OperationErrorType.UnAuthorized:
+                result = new UnauthorizedObjectResult(resObj);
+                break;
+
             case OperationErrorType.InternalServerError:
                 result = new ObjectResult(resObj);
                 result.StatusCode = StatusCodes.Status500InternalServerError;
