@@ -2,6 +2,7 @@
 using LibraryAPI.Dto.Author;
 using LibraryAPI.Dto.BookAuthor;
 using LibraryAPI.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
@@ -16,6 +17,7 @@ namespace LibraryAPI.Controllers
             _bookAuthorService = bookAuthorService;
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<List<BookAuthorDto>>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request

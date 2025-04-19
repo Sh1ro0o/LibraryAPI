@@ -3,6 +3,7 @@ using LibraryAPI.Dto.BookGenre;
 using LibraryAPI.Dto.User;
 using LibraryAPI.Interface.Service;
 using LibraryAPI.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

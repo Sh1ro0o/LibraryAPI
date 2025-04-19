@@ -17,6 +17,7 @@ namespace LibraryAPI.Controllers
             _bookService = bookService;
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<BookDto>>))]
         [ProducesResponseType(500)]
         [HttpGet("allBooks")]
@@ -27,6 +28,7 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<BookDto>))] //OK
         [ProducesResponseType(409)] //Conflict
         [ProducesResponseType(404)] //NotFound
@@ -40,6 +42,7 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<BookDto>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
@@ -52,6 +55,7 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request

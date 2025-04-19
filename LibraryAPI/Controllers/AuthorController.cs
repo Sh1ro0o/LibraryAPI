@@ -3,6 +3,7 @@ using LibraryAPI.Dto.Author;
 using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
@@ -17,6 +18,7 @@ namespace LibraryAPI.Controllers
             _authorService = authorService;
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<AuthorDto>>))]
         [ProducesResponseType(500)]
         [HttpGet("allAuthors")]
@@ -27,6 +29,7 @@ namespace LibraryAPI.Controllers
             return authors.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<AuthorDto>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
@@ -39,6 +42,7 @@ namespace LibraryAPI.Controllers
             return author.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<AuthorDto>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
@@ -51,6 +55,7 @@ namespace LibraryAPI.Controllers
             return author.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request

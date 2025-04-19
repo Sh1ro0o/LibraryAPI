@@ -4,6 +4,7 @@ using LibraryAPI.Dto.BookCopy;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
 using LibraryAPI.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
@@ -18,6 +19,7 @@ namespace LibraryAPI.Controllers
             _bookCopyService = bookCopyService;
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<BookCopyDto>>))]
         [ProducesResponseType(500)]
         [HttpGet("allBooksCopies")]
@@ -28,6 +30,7 @@ namespace LibraryAPI.Controllers
             return bookCopies.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<BookCopyDto>))] //OK
         [ProducesResponseType(409)] //Conflict
         [ProducesResponseType(404)] //NotFound
@@ -41,6 +44,7 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<BookCopyDto>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
@@ -53,6 +57,7 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
