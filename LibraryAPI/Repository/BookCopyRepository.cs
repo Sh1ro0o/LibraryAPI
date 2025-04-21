@@ -27,9 +27,7 @@ namespace LibraryAPI.Repository
         }
         public async Task<BookCopy?> GetById(int id)
         {
-            var bookCopy = await _context.BookCopy.FirstOrDefaultAsync(x => x.RecordId == id);
-
-            return bookCopy;
+            return await _context.BookCopy.FirstOrDefaultAsync(x => x.RecordId == id);
         }
 
         #endregion
