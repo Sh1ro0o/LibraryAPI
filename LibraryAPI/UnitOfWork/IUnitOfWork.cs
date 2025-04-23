@@ -11,6 +11,7 @@ namespace LibraryAPI.UnitOfWork
         IBookCopyRepository BookCopyRepository { get; }
         IGenreRepository GenreRepository { get; }
         IBookGenreRepository BookGenreRepository { get; }
+        IBorrowingTransactionRepository BorrowingTransactionRepository { get; }
 
         Task<int> Commit();
     }

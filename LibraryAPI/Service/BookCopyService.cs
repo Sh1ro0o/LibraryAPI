@@ -65,16 +65,21 @@ namespace LibraryAPI.Service
             }
 
             //Update book
-            bookCopy.ModifiedDate = DateTime.UtcNow;
+            if (model.BookId is int bookId)
+            {
+                var existingBook = await _unitOfWork.BookRepository.GetById(bookId);
+                if (existingBook == null)
+                {
+                    return OperationResult<BookCopyDto?>.NotFound(message: $"Book with Id: {bookId} not found!");
+                }
 
+                bookCopy.BookId = bookId;
+            }
             if (model.IsAvailable is bool isAvailable)
             {
                 bookCopy.IsAvailable = isAvailable;
             }
-            if (model.BookId is int bookId)
-            {
-                bookCopy.BookId = bookId;
-            }
+            bookCopy.ModifiedDate = DateTime.UtcNow;
 
             _unitOfWork.BookCopyRepository.Update(bookCopy);
             await _unitOfWork.Commit();
@@ -86,7 +91,6 @@ namespace LibraryAPI.Service
         {
             //Check if bookcopy exists
             var bookCopy = await _unitOfWork.BookCopyRepository.GetById(id);
-
             if (bookCopy == null)
             {
                 return OperationResult<bool>.NotFound(message: $"BookCopy with Id: {id} not found!");

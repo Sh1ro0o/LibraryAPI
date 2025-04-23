@@ -72,6 +72,7 @@ builder.Services.AddScoped<IBookGenreService, BookGenreService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IBorrowingTransactionService, BorrowingTransactionService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
