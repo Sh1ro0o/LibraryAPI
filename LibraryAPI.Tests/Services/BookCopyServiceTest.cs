@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryAPI.Tests
+namespace LibraryAPI.Tests.Services
 {
     public class BookCopyServiceTest
     {
@@ -32,7 +32,7 @@ namespace LibraryAPI.Tests
         }
 
         [Fact]
-        public async Task BookCopyService_GetAll_ReturnsOperationResultSuccess()
+        public async Task BookCopyService_GetAll_ReturnsOperationResultSuccessWithMappedDtos()
         {
             //Arrange
             BookCopyFilter filter = new BookCopyFilter();
@@ -63,7 +63,13 @@ namespace LibraryAPI.Tests
                 }
             };
 
-            var expectedResult = OperationResult<IEnumerable<BookCopyDto>>.Success(bookCopyReturnDto);
+            var expectedResult = new OperationResult<IEnumerable<BookCopyDto>>
+            {
+                IsSuccessful = true,
+                Data = bookCopyReturnDto,
+                Message = null,
+                ErrorType = null
+            };
 
             A.CallTo(() => _unitOfWork.BookCopyRepository.GetAll(filter)).Returns(bookCopyReturn);
 
@@ -72,6 +78,48 @@ namespace LibraryAPI.Tests
 
             //Assert
             result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Fact]
+        public async Task BookCopyService_CreateBookCopy_ReturnsOperationResultSuccessWithMappedDto()
+        {
+            //Arrange
+            var createBookCopyDto = new CreateBookCopyDto { BookId = 1 };
+            var serialNumberTest = "TEST-123";
+
+            A.CallTo(() => _serialNumberGeneratorService.GenereateBookCopySerialNumber()).Returns(serialNumberTest);
+            A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._)).Returns(A<BookCopy>._);
+            A.CallTo(() => _unitOfWork.Commit()).Returns(0);
+
+            var expectedBookCopyReturnDto = new BookCopyDto
+            {
+                RecordId = 0,
+                BookId = 1,
+                SerialNumber = serialNumberTest,
+                IsAvailable = true,
+                CreateDate = DateTime.UtcNow,
+                ModifiedDate = null
+            };
+
+            var expectedResult = new OperationResult<BookCopyDto>
+            {
+                IsSuccessful = true,
+                Data = expectedBookCopyReturnDto,
+                Message = null,
+                ErrorType = null
+            };
+
+            //Act
+            var result = await _bookCopyService.CreateBookCopy(createBookCopyDto);
+
+            //Assert
+            result.Data!.CreateDate.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromSeconds(1));
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Excluding(x => x.Data!.CreateDate)
+            );
+
+            A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _unitOfWork.Commit()).MustHaveHappenedOnceExactly();
         }
     }
 }
