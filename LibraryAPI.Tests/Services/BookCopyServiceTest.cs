@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using LibraryAPI.Common;
+using LibraryAPI.Common.Enums;
 using LibraryAPI.Dto.BookCopy;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
@@ -32,7 +33,7 @@ namespace LibraryAPI.Tests.Services
         }
 
         [Fact]
-        public async Task BookCopyService_GetAll_ReturnsOperationResultSuccessWithMappedDtos()
+        public async Task BookCopyService_GetAll_ReturnsSuccessWithMappedDtos()
         {
             //Arrange
             BookCopyFilter filter = new BookCopyFilter();
@@ -81,15 +82,15 @@ namespace LibraryAPI.Tests.Services
         }
 
         [Fact]
-        public async Task BookCopyService_CreateBookCopy_ReturnsOperationResultSuccessWithMappedDto()
+        public async Task BookCopyService_CreateBookCopy_ReturnsSuccessWithMappedDto()
         {
             //Arrange
             var createBookCopyDto = new CreateBookCopyDto { BookId = 1 };
             var serialNumberTest = "TEST-123";
 
             A.CallTo(() => _serialNumberGeneratorService.GenereateBookCopySerialNumber()).Returns(serialNumberTest);
-            A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._)).Returns(A<BookCopy>._);
-            A.CallTo(() => _unitOfWork.Commit()).Returns(0);
+            A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._));
+            A.CallTo(() => _unitOfWork.Commit());
 
             var expectedBookCopyReturnDto = new BookCopyDto
             {
@@ -120,6 +121,29 @@ namespace LibraryAPI.Tests.Services
 
             A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => _unitOfWork.Commit()).MustHaveHappenedOnceExactly();
+        }
+
+        [Fact]
+        public async Task BookCopyService_UpdateBookCopy_ReturnsBookCopyNotFound()
+        {
+            //Arrange
+            var expectedErrorType = OperationErrorType.NotFound;
+
+            var saveBookCopyDto = new SaveBookCopyDto
+            {
+                RecordId = 1,
+                IsAvailable = true,
+                BookId = 1
+            };
+
+            A.CallTo(() => _unitOfWork.BookCopyRepository.GetById(saveBookCopyDto.RecordId)).Returns(Task.FromResult<BookCopy?>(null));
+
+            //Act
+            var result = await _bookCopyService.UpdateBookCopy(saveBookCopyDto);
+
+            //Assert
+            result.IsSuccessful.Should().BeFalse();
+            result.ErrorType.Should().Be(expectedErrorType);
         }
     }
 }
