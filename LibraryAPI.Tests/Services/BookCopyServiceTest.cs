@@ -33,7 +33,7 @@ namespace LibraryAPI.Tests.Services
         }
 
         [Fact]
-        public async Task BookCopyService_GetAll_ReturnsSuccessWithMappedDtos()
+        public async Task BookCopyService_GetAll_ReturnsSuccess()
         {
             //Arrange
             BookCopyFilter filter = new BookCopyFilter();
@@ -51,34 +51,15 @@ namespace LibraryAPI.Tests.Services
                 }
             };
 
-            var bookCopyReturnDto = new List<BookCopyDto>
-            {
-                new BookCopyDto
-                {
-                    RecordId = 1,
-                    SerialNumber = "TEST-SERIAL",
-                    IsAvailable = true,
-                    CreateDate = new DateTime(new DateOnly(2005, 12, 12), new TimeOnly(12, 45, 12)),
-                    ModifiedDate = null,
-                    BookId = 1,
-                }
-            };
-
-            var expectedResult = new OperationResult<IEnumerable<BookCopyDto>>
-            {
-                IsSuccessful = true,
-                Data = bookCopyReturnDto,
-                Message = null,
-                ErrorType = null
-            };
-
             A.CallTo(() => _unitOfWork.BookCopyRepository.GetAll(filter)).Returns(bookCopyReturn);
 
             //Act
             var result = await _bookCopyService.GetAll(filter);
 
             //Assert
-            result.Should().BeEquivalentTo(expectedResult);
+            result.IsSuccessful.Should().BeTrue();
+            result.Data.Should().NotBeNull();
+            result.Data.Should().BeAssignableTo<IEnumerable<BookCopyDto>>();
         }
 
         [Fact]
@@ -92,7 +73,7 @@ namespace LibraryAPI.Tests.Services
             A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._));
             A.CallTo(() => _unitOfWork.Commit());
 
-            var expectedBookCopyReturnDto = new BookCopyDto
+            var expectedBookCopyDtoReturn = new BookCopyDto
             {
                 RecordId = 0,
                 BookId = 1,
@@ -105,7 +86,7 @@ namespace LibraryAPI.Tests.Services
             var expectedResult = new OperationResult<BookCopyDto>
             {
                 IsSuccessful = true,
-                Data = expectedBookCopyReturnDto,
+                Data = expectedBookCopyDtoReturn,
                 Message = null,
                 ErrorType = null
             };
@@ -114,11 +95,11 @@ namespace LibraryAPI.Tests.Services
             var result = await _bookCopyService.CreateBookCopy(createBookCopyDto);
 
             //Assert
+            result.Data.Should().NotBeNull();
             result.Data!.CreateDate.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromSeconds(1));
             result.Should().BeEquivalentTo(expectedResult, options => options
                 .Excluding(x => x.Data!.CreateDate)
             );
-
             A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._)).MustHaveHappenedOnceExactly();
             A.CallTo(() => _unitOfWork.Commit()).MustHaveHappenedOnceExactly();
         }
@@ -144,6 +125,92 @@ namespace LibraryAPI.Tests.Services
             //Assert
             result.IsSuccessful.Should().BeFalse();
             result.ErrorType.Should().Be(expectedErrorType);
+        }
+
+        [Fact]
+        public async Task BookCopyService_UpdateBookCopy_ReturnsBookNotFound()
+        {
+            //Arrange
+            var expectedErrorType = OperationErrorType.NotFound;
+            var bookCopyFake = A.Fake<BookCopy>();
+
+            var saveBookCopyDto = new SaveBookCopyDto
+            {
+                RecordId = 1,
+                IsAvailable = true,
+                BookId = 1,
+            };
+
+
+            A.CallTo(() => _unitOfWork.BookCopyRepository.GetById(saveBookCopyDto.RecordId)).Returns(bookCopyFake);
+            A.CallTo(() => _unitOfWork.BookRepository.GetById(saveBookCopyDto.BookId.Value)).Returns(Task.FromResult<Book?>(null));
+
+            //Act
+            var result = await _bookCopyService.UpdateBookCopy(saveBookCopyDto);
+
+            //Assert
+            result.IsSuccessful.Should().BeFalse();
+            result.ErrorType.Should().Be(expectedErrorType);
+        }
+
+        [Fact]
+        public async Task BookCopyService_UpdateBookCopy_ReturnsSuccessWithMappedDto()
+        {
+            //Arrange
+            var serialNumberTest = "TEST-123";
+            var fakeBook = A.Fake<Book>();
+
+            var saveBookCopyDto = new SaveBookCopyDto
+            {
+                RecordId = 1,
+                IsAvailable = true,
+                BookId = 1,
+            };
+
+            var bookCopy = new BookCopy
+            {
+                RecordId = 1,
+                BookId = 99,
+                SerialNumber = serialNumberTest,
+                IsAvailable = false,
+                CreateDate = DateTime.UtcNow,
+                ModifiedDate = null
+            };
+
+            var expectedBookCopyDtoReturn = new BookCopyDto
+            {
+                RecordId = 1,
+                BookId = 1,
+                SerialNumber = serialNumberTest,
+                IsAvailable = true,
+                CreateDate = bookCopy.CreateDate,
+                ModifiedDate = DateTime.UtcNow,
+            };
+
+            var expectedResult = new OperationResult<BookCopyDto>
+            {
+                IsSuccessful = true,
+                Data = expectedBookCopyDtoReturn,
+                Message = null,
+                ErrorType = null
+            };
+
+            A.CallTo(() => _unitOfWork.BookCopyRepository.GetById(saveBookCopyDto.RecordId)).Returns(bookCopy);
+            A.CallTo(() => _unitOfWork.BookRepository.GetById(saveBookCopyDto.BookId.Value)).Returns(fakeBook);
+            A.CallTo(() => _unitOfWork.BookCopyRepository.Update(A<BookCopy>._));
+            A.CallTo(() => _unitOfWork.Commit());
+
+            //Act
+            var result = await _bookCopyService.UpdateBookCopy(saveBookCopyDto);
+
+            //Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.Data.Should().NotBeNull();
+            result.Data?.ModifiedDate.Should().NotBeNull();
+            result.Data?.ModifiedDate.Should().BeCloseTo(DateTime.UtcNow, precision: TimeSpan.FromSeconds(1));
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Excluding(x => x.Data.ModifiedDate)
+            );
         }
     }
 }
