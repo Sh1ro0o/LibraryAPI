@@ -212,5 +212,39 @@ namespace LibraryAPI.Tests.Services
                 .Excluding(x => x.Data.ModifiedDate)
             );
         }
+
+        [Fact]
+        public async Task BookCopyService_DeleteBookCopy_ReturnsBookCopyNotFound()
+        {
+            //Arrange
+            int id = 5;
+            var expectedErrorType = OperationErrorType.NotFound;
+
+            A.CallTo(() => _unitOfWork.BookCopyRepository.GetById(id)).Returns(Task.FromResult<BookCopy?>(null));
+
+            //Act
+            var result = await _bookCopyService.DeleteBookCopy(id);
+
+            //Assert
+            result.IsSuccessful.Should().BeFalse();
+            result.ErrorType.Should().Be(expectedErrorType);
+        }
+
+        [Fact]
+        public async Task BookCopyService_DeleteBookCopy_ReturnsSuccess()
+        {
+            //Arrange
+            int id = 5;
+            var bookCopyFake = A.Fake<BookCopy>();
+
+            A.CallTo(() => _unitOfWork.BookCopyRepository.GetById(id)).Returns(bookCopyFake);
+
+            //Act
+            var result = await _bookCopyService.DeleteBookCopy(id);
+
+            //Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.Data.Should().BeTrue();
+        }
     }
 }
