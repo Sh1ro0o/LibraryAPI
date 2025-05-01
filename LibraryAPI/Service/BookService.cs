@@ -47,13 +47,9 @@ namespace LibraryAPI.Service
             {
                 bookFilter.ISBN = model.ISBN;
             }
-            else if (!string.IsNullOrEmpty(model.Title))
-            {
-                bookFilter.Title = model.Title;
-            }
             else
             {
-                return OperationResult<BookDto?>.BadRequest(message: "Error! Please provide a book ISBN or Title.");
+                bookFilter.Title = model.Title;
             }
 
             var existingBook = await _unitOfWork.BookRepository.GetOne(bookFilter);
@@ -119,7 +115,7 @@ namespace LibraryAPI.Service
 
             await _unitOfWork.Commit();
 
-            //RETURN NEWLY CREATED BOOK WITH AUTHORS
+            //RETURN NEWLY CREATED BOOK WITH AUTHORS AND GENRES
             var bookWithAuthors = await _unitOfWork.BookRepository.GetById(newBook.RecordId);
 
             if (bookWithAuthors == null)

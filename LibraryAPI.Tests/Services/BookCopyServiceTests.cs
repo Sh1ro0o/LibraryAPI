@@ -9,20 +9,15 @@ using LibraryAPI.Interface.Utility;
 using LibraryAPI.Model;
 using LibraryAPI.Service;
 using LibraryAPI.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LibraryAPI.Tests.Services
 {
-    public class BookCopyServiceTest
+    public class BookCopyServiceTests
     {
         private readonly IBookCopyService _bookCopyService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISerialNumberGeneratorService _serialNumberGeneratorService;
-        public BookCopyServiceTest()
+        public BookCopyServiceTests()
         {
             //Dependencies
             _unitOfWork = A.Fake<IUnitOfWork>();
