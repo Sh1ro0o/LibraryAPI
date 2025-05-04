@@ -138,7 +138,6 @@ namespace LibraryAPI.Service
                 return OperationResult<BookDto?>.NotFound(message: "Book Not Found!");
             }
 
-            existingBook.PublishDate = model.PublishDate;
             existingBook.Title = model.Title;
             existingBook.PublishDate = model.PublishDate;
             existingBook.ISBN = model.ISBN;

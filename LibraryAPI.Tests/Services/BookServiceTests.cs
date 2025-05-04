@@ -7,6 +7,7 @@ using LibraryAPI.Interface.Service;
 using LibraryAPI.Model;
 using LibraryAPI.Service;
 using LibraryAPI.UnitOfWork;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections;
 using System.Collections.ObjectModel;
 
@@ -89,8 +90,8 @@ namespace LibraryAPI.Tests.Services
         public async Task BookService_CreateBook_ReturnsGenreNotFound()
         {
             //Arrange
-            var createBookDto = new CreateBookDto { 
-                Title = "TEST-TITLE", 
+            var createBookDto = new CreateBookDto {
+                Title = "TEST-TITLE",
                 AuthorIds = [1],
                 GenreIds = [1, 5]
             };
@@ -128,7 +129,7 @@ namespace LibraryAPI.Tests.Services
             var existingGenres = GetValidGenres();
 
             var createdBook = new Book
-            { 
+            {
                 RecordId = 1,
                 Title = "TEST-TITLE",
             };
@@ -197,17 +198,47 @@ namespace LibraryAPI.Tests.Services
             A.CallTo(() => _unitOfWork.BookRepository.Create(A<Book>._)).MustHaveHappened();
         }
 
+        [Fact]
+        public async Task BookService_UpdateBook_ReturnsBookNotFound()
+        {
+            //Arrange
+            var saveBookDto = new SaveBookDto
+            {
+                RecordId = 1,
+                Title = "TEST-TITLE"
+            };
+            var expectedErrorType = OperationErrorType.NotFound;
+
+            A.CallTo(() => _unitOfWork.BookRepository.GetById(saveBookDto.RecordId)).Returns(Task.FromResult<Book?>(null));
+
+            //Act
+            var result = await _bookService.UpdateBook(saveBookDto);
+
+            //Assert
+            result.IsSuccessful.Should().BeFalse();
+            result.ErrorType.Should().Be(expectedErrorType);
+            result.Data.Should().BeNull();
+        }
+
+
 
         #region PRIVATE METHODS
 
         private List<Author> GetValidAuthors() => new()
         {
-            new Author { RecordId = 1, FirstName = "TESTNAME", LastName = "TESTLASTNAME" }
+            new Author { 
+                RecordId = 1,
+                FirstName = "TESTNAME",
+                LastName = "TESTLASTNAME"
+            }
         };
 
         private List<Genre> GetValidGenres() => new()
         {
-            new Genre { RecordId = 1, Name = "TEST-GENRE" }
+            new Genre { 
+                RecordId = 1,
+                Name = "TEST-GENRE"
+            }
         };
 
         #endregion
