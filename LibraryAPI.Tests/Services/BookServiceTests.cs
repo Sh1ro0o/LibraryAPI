@@ -220,7 +220,82 @@ namespace LibraryAPI.Tests.Services
             result.Data.Should().BeNull();
         }
 
+        [Fact]
+        public async Task BookService_UpdateBook_Success()
+        {
+            //Arrange
+            var saveBookDto = new SaveBookDto
+            {
+                RecordId = 1,
+                Title = "TEST-TITLE-RIGHT",
+                PublishDate = DateOnly.MaxValue,
+                ISBN = "42121421",
+                Description = "Right description"
+            };
 
+            var returnedBook = new Book
+            {
+                RecordId = 1,
+                Title = "TEST-TITLE-WRONG",
+                PublishDate = DateOnly.MinValue,
+                ISBN = "1231231",
+                Description = "Wrong description"
+            };
+
+            A.CallTo(() => _unitOfWork.BookRepository.GetById(saveBookDto.RecordId)).Returns(returnedBook);
+            A.CallTo(() => _unitOfWork.BookRepository.Update(A<Book>._));
+            A.CallTo(() => _unitOfWork.Commit());
+
+            //Act
+            var result = await _bookService.UpdateBook(saveBookDto);
+
+            //Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.Data.Should().NotBeNull();
+            result.Data.Should().BeEquivalentTo(saveBookDto);
+            result.ErrorType.Should().BeNull();
+
+            A.CallTo(() => _unitOfWork.Commit()).MustHaveHappened();
+            A.CallTo(() => _unitOfWork.BookRepository.Update(A<Book>._)).MustHaveHappened();
+        }
+
+        [Fact]
+        public async Task BookService_DeleteBook_ReturnsBookNotFound()
+        {
+            //Arrange
+            var expectedErrorType = OperationErrorType.NotFound;
+            var deleteId = 1;
+
+            A.CallTo(() => _unitOfWork.BookRepository.GetById(deleteId)).Returns(Task.FromResult<Book?>(null));
+
+            //Act
+            var result = await _bookService.DeleteBook(deleteId);
+
+            //Assert
+            result.IsSuccessful.Should().BeFalse();
+            result.ErrorType.Should().Be(expectedErrorType); 
+            result.Data.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task BookService_DeleteBook_ReturnsSuccess()
+        {
+            //Arrange
+            var deleteId = 1;
+            var fakeBook = A.Fake<Book>();
+
+            A.CallTo(() => _unitOfWork.BookRepository.GetById(deleteId)).Returns(fakeBook);
+            A.CallTo(() => _unitOfWork.BookRepository.Delete(fakeBook));
+            A.CallTo(() => _unitOfWork.Commit());
+
+            //Act
+            var result = await _bookService.DeleteBook(deleteId);
+
+            //Assert
+            result.IsSuccessful.Should().BeTrue();
+            result.Data.Should().BeTrue();
+            result.ErrorType.Should().BeNull();
+        }
 
         #region PRIVATE METHODS
 
