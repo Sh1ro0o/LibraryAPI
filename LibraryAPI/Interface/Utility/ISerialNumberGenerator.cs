@@ -2,6 +2,6 @@
 {
     public interface ISerialNumberGeneratorService
     {
-        string GenereateBookCopySerialNumber();
+        string GenerateBookCopySerialNumber();
     }
 }

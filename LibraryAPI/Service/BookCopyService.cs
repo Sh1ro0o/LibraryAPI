@@ -45,7 +45,7 @@ namespace LibraryAPI.Service
 
             newBookCopy.IsAvailable = true;
             newBookCopy.CreateDate = DateTime.UtcNow;
-            newBookCopy.SerialNumber = _serialNumberGeneratorService.GenereateBookCopySerialNumber();
+            newBookCopy.SerialNumber = _serialNumberGeneratorService.GenerateBookCopySerialNumber();
 
             var result = await _unitOfWork.BookCopyRepository.Create(newBookCopy);
             await _unitOfWork.Commit();

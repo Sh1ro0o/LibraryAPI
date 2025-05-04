@@ -64,7 +64,7 @@ namespace LibraryAPI.Tests.Services
             var createBookCopyDto = new CreateBookCopyDto { BookId = 1 };
             var serialNumberTest = "TEST-123";
 
-            A.CallTo(() => _serialNumberGeneratorService.GenereateBookCopySerialNumber()).Returns(serialNumberTest);
+            A.CallTo(() => _serialNumberGeneratorService.GenerateBookCopySerialNumber()).Returns(serialNumberTest);
             A.CallTo(() => _unitOfWork.BookCopyRepository.Create(A<BookCopy>._));
             A.CallTo(() => _unitOfWork.Commit());
 
