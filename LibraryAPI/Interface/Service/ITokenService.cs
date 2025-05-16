@@ -1,9 +1,10 @@
-﻿using LibraryAPI.Model;
+﻿using LibraryAPI.Dto.Token;
+using LibraryAPI.Model;
 
 namespace LibraryAPI.Interface.Service
 {
     public interface ITokenService
     {
-        string CreateToken(AppUser user);
+        TokenDto CreateToken(AppUser user);
     }
 }

@@ -43,10 +43,13 @@ namespace LibraryAPI.Service
                 var roleResult = await _userManager.AddToRoleAsync(newUser, Roles.User);
                 if (roleResult.Succeeded)
                 {
+                    var tokenDto = _tokenService.CreateToken(newUser);
+
                     var newUserDto = new UserDto
                     {
                         Email = model.Email,
-                        Token = _tokenService.CreateToken(newUser)
+                        Token = tokenDto.Token,
+                        ExpiresOn = tokenDto.ExpiresOn
                     };
 
                     //Return success
@@ -80,9 +83,13 @@ namespace LibraryAPI.Service
 
             if (userLogin.Succeeded)
             {
-                var userDto = new UserDto { 
+                var tokenDto = _tokenService.CreateToken(user);
+
+                var userDto = new UserDto
+                {
                     Email = model.Email,
-                    Token = _tokenService.CreateToken(user)
+                    Token = tokenDto.Token,
+                    ExpiresOn = tokenDto.ExpiresOn
                 };
 
                 return OperationResult<UserDto?>.Success(userDto);

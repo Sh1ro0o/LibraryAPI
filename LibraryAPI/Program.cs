@@ -70,14 +70,28 @@ builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
 builder.Services.AddScoped<IBookCopyService, BookCopyService>();
 builder.Services.AddScoped<IBookGenreService, BookGenreService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IBorrowingTransactionService, BorrowingTransactionService>();
+builder.Services.AddSingleton<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
 
 //Add JWT Bearer to Swagger
 builder.Services.AddSwaggerGen(option =>
@@ -120,6 +134,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAuthorization();
 

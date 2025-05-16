@@ -1,8 +1,7 @@
-﻿namespace LibraryAPI.Dto.User
+﻿namespace LibraryAPI.Dto.Token
 {
-    public class UserDto
+    public class TokenDto
     {
-        public required string Email { get; set; }
         public required string Token { get; set; }
         public required DateTime ExpiresOn { get; set; }
     }
