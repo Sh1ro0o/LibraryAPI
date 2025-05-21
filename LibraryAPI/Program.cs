@@ -3,6 +3,7 @@ using LibraryAPI.Interface;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Interface.Service;
 using LibraryAPI.Interface.Utility;
+using LibraryAPI.Middleware;
 using LibraryAPI.Model;
 using LibraryAPI.Repository;
 using LibraryAPI.Service;
@@ -132,6 +133,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAngularApp");
