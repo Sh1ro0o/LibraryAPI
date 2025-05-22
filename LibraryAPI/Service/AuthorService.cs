@@ -18,11 +18,11 @@ namespace LibraryAPI.Service
 
         public async Task<OperationResult<IEnumerable<AuthorDto>>> GetAll(AuthorFilter authorFilter)
         {
-            var authors = await _unitOfWork.AuthorRepository.GetAll(authorFilter);
+            var paginatedAuthors = await _unitOfWork.AuthorRepository.GetAll(authorFilter);
 
-            var authorsDto = authors.Select(x => x.ToAuthorDto());
+            var authorsDto = paginatedAuthors.Data.Select(x => x.ToAuthorDto());
 
-            return OperationResult<IEnumerable<AuthorDto>>.Success(data: authorsDto);
+            return OperationResult<IEnumerable<AuthorDto>>.Success(data: authorsDto, totalCount: paginatedAuthors.TotalItems);
         }
 
         public async Task<OperationResult<AuthorDto?>> CreateAuthor(CreateAuthorDto model)

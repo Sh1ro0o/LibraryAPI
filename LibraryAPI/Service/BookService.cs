@@ -19,11 +19,11 @@ namespace LibraryAPI.Service
 
         public async Task<OperationResult<IEnumerable<BookDto>>> GetAll(BookFilter filter)
         {
-            var books = await _unitOfWork.BookRepository.GetAll(filter);
+            var paginatedBooks = await _unitOfWork.BookRepository.GetAll(filter);
 
-            var booksDto = books.Select(x => x.ToBookDto());
+            var booksDto = paginatedBooks.Data.Select(x => x.ToBookDto());
             
-            return OperationResult<IEnumerable<BookDto>>.Success(booksDto);
+            return OperationResult<IEnumerable<BookDto>>.Success(booksDto, paginatedBooks.TotalItems);
         }
 
         public async Task<OperationResult<BookDto?>> GetById(int id)

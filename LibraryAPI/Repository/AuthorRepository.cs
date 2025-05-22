@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Data;
+﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Data;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
@@ -15,7 +16,7 @@ namespace LibraryAPI.Repository
         }
 
         #region GET Methods
-        public async Task<ICollection<Author>> GetAll(AuthorFilter filter)
+        public async Task<PaginatedResponse<Author>> GetAll(AuthorFilter filter)
         {
             var query = _context.Author.AsQueryable();
 
@@ -39,6 +40,9 @@ namespace LibraryAPI.Repository
                 query = query.Where(x => x.RecordId != filter.ExcludeRecordId);
             }
 
+            //Total before pagination
+            var totalItems = await query.CountAsync();
+
             if (filter.PageNumber != null && filter.PageSize != null)
             {
                 query = query.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1));
@@ -47,7 +51,13 @@ namespace LibraryAPI.Repository
 
             query = query.OrderByDescending(x => x.RecordId);
 
-            return await query.ToListAsync();
+            var authors = await query.ToListAsync();
+
+            return new PaginatedResponse<Author>
+            {
+                Data = authors,
+                TotalItems = totalItems
+            };
         }
 
         public async Task<Author?> GetById(int id)

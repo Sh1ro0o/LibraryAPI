@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Data;
+﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Data;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
@@ -16,9 +17,27 @@ namespace LibraryAPI.Repository
 
         #region GET Methods
 
-        public async Task<ICollection<Genre>> GetAll(GenreFilter filter)
+        public async Task<PaginatedResponse<Genre>> GetAll(GenreFilter filter)
         {
-            return await GetGenresFilteredInternal(filter).ToListAsync();
+            var query = GetGenresFilteredInternal(filter);
+
+            //Total before pagination
+            var totalItems = await query.CountAsync();
+
+            //Pagination
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                int skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                query = query.Skip(skip).Take(filter.PageSize.Value);
+            }
+
+            var genres = await query.ToListAsync();
+
+            return new PaginatedResponse<Genre>
+            {
+                Data = genres,
+                TotalItems = totalItems
+            };
         }
 
         public async Task<Genre?> GetOne(GenreFilter filter)

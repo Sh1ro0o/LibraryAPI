@@ -8,7 +8,17 @@ namespace LibraryAPI.Common
         public string? Message { get; set; }
         public OperationErrorType? ErrorType { get; set; }
         public T? Data { get; set; }
+        public int? TotalCount { get; set; } //Pagination
 
+        public static OperationResult<T> Success(T data, int totalCount)
+        {
+            return new OperationResult<T>
+            {
+                IsSuccessful = true,
+                Data = data,
+                TotalCount = totalCount,
+            };
+        }
 
         public static OperationResult<T> Success(T data)
         {

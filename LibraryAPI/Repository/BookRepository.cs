@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Data;
+﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Data;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface;
 using LibraryAPI.Model;
@@ -14,9 +15,27 @@ namespace LibraryAPI.Repository
             _context = context;
         }
 
-        public async Task<ICollection<Book>> GetAll(BookFilter filter)
+        public async Task<PaginatedResponse<Book>> GetAll(BookFilter filter)
         {
-            return await GetBooksFilteredInternal(filter).ToListAsync();
+            var query = GetBooksFilteredInternal(filter);
+
+            //Total before pagination
+            var totalItems = await query.CountAsync();
+
+            //Pagination
+            if (filter.PageNumber.HasValue && filter.PageSize.HasValue)
+            {
+                int skip = (filter.PageNumber.Value - 1) * filter.PageSize.Value;
+                query = query.Skip(skip).Take(filter.PageSize.Value);
+            }
+
+            var books = await query.ToListAsync();
+
+            return new PaginatedResponse<Book>
+            {
+                Data = books,
+                TotalItems = totalItems
+            };
         }
 
         public async Task<Book?> GetOne(BookFilter filter)
@@ -86,13 +105,6 @@ namespace LibraryAPI.Repository
             if (filter.IncludeGenres)
             {
                 query = query.Include(x => x.BookGenres).ThenInclude(x => x.Genre);
-            }
-
-            // Apply pagination if provided
-            if (filter.PageNumber != null && filter.PageSize != null)
-            {
-                query = query.Skip(filter.PageSize.Value * (filter.PageNumber.Value - 1));
-                query = query.Take(filter.PageSize.Value);
             }
 
             // Apply sorting

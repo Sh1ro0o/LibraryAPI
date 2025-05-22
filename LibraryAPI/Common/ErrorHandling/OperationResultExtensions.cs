@@ -12,7 +12,9 @@ public static class OperationResultExtensions
         {
             return new OkObjectResult(new ResponseObject<T>
             {
-                Data = operationResult.Data
+                Data = operationResult.Data,
+                Message = operationResult.Message,
+                TotalCount = operationResult.TotalCount
             });
         }
 
@@ -20,7 +22,8 @@ public static class OperationResultExtensions
         var resObj = new ResponseObject<T>
         {
             Data = operationResult.Data,
-            Message = operationResult.Message
+            Message = operationResult.Message,
+            TotalCount = operationResult.TotalCount
         };
 
         ObjectResult result;

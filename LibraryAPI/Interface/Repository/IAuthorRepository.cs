@@ -1,11 +1,12 @@
-﻿using LibraryAPI.Filters;
+﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Filters;
 using LibraryAPI.Model;
 
 namespace LibraryAPI.Interface.Repository
 {
     public interface IAuthorRepository
     {
-        Task<ICollection<Author>> GetAll(AuthorFilter filter);
+        Task<PaginatedResponse<Author>> GetAll(AuthorFilter filter);
         Task<Author?> GetById(int id);
         Task<ICollection<Author>> CheckIfAuthorsExist(ICollection<int> authorIds);
         Task<Author> CreateAuthor(Author author);
