@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Common;
+using LibraryAPI.Common.Constants;
 using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
@@ -12,13 +13,23 @@ namespace LibraryAPI.Service
     public class BookService : IBookService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BookService(IUnitOfWork unitOfWork)
+        private readonly ICurrentUserContext _currentUserContext;
+
+        public BookService(IUnitOfWork unitOfWork, ICurrentUserContext currentUserContext)
         {
             _unitOfWork = unitOfWork;
+            _currentUserContext = currentUserContext;
         }
 
         public async Task<OperationResult<IEnumerable<BookDto>>> GetAll(BookFilter filter)
         {
+            var userRoles = _currentUserContext.Roles;
+
+            if (userRoles.Contains(Roles.User))
+            {
+                var k = "hello";
+            }
+
             var paginatedBooks = await _unitOfWork.BookRepository.GetAll(filter);
 
             var booksDto = paginatedBooks.Data.Select(x => x.ToBookDto());

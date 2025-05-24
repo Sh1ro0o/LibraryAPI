@@ -5,6 +5,6 @@ namespace LibraryAPI.Interface.Service
 {
     public interface ITokenService
     {
-        TokenDto CreateToken(AppUser user);
+        Task<TokenDto> CreateToken(AppUser user);
     }
 }

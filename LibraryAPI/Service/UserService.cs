@@ -43,7 +43,7 @@ namespace LibraryAPI.Service
                 var roleResult = await _userManager.AddToRoleAsync(newUser, Roles.User);
                 if (roleResult.Succeeded)
                 {
-                    var tokenDto = _tokenService.CreateToken(newUser);
+                    var tokenDto = await _tokenService.CreateToken(newUser);
 
                     var newUserDto = new UserDto
                     {
@@ -83,7 +83,7 @@ namespace LibraryAPI.Service
 
             if (userLogin.Succeeded)
             {
-                var tokenDto = _tokenService.CreateToken(user);
+                var tokenDto = await _tokenService.CreateToken(user);
 
                 var userDto = new UserDto
                 {
