@@ -7,6 +7,10 @@
         public DateOnly? PublishDate { get; set; }
         public string? ISBN { get; set; }
         public string? Description { get; set; }
+
+        public List<int> GenreIds { get; set; } = new List<int>();
+        public List<int> AuthorIds { get; set; } = new List<int>();
+
         public bool IncludeAuthors { get; set; } = true; //Include Authors
         public bool IncludeGenres { get; set; } = true; //Include Genres
 

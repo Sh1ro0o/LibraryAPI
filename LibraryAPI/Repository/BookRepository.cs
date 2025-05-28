@@ -4,6 +4,8 @@ using LibraryAPI.Filters;
 using LibraryAPI.Interface;
 using LibraryAPI.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace LibraryAPI.Repository
 {
@@ -103,13 +105,24 @@ namespace LibraryAPI.Repository
             // Include authors if requested
             if (filter.IncludeAuthors)
             {
-                query = query.Include(x => x.BookAuthors).ThenInclude(x => x.Author);
+                query = query.Include(x => x.BookAuthors)
+                             .ThenInclude(y => y.Author);
+            }
+
+            if (!filter.AuthorIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => x.BookAuthors.Any(y => filter.AuthorIds.Contains(y.AuthorId)));
             }
 
             // Include genres if requested
             if (filter.IncludeGenres)
             {
                 query = query.Include(x => x.BookGenres).ThenInclude(x => x.Genre);
+            }
+
+            if (!filter.GenreIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => x.BookGenres.Any(y => filter.GenreIds.Contains(y.GenreId)));
             }
 
             // Apply sorting
