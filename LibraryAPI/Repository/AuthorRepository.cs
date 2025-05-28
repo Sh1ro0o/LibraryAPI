@@ -27,12 +27,12 @@ namespace LibraryAPI.Repository
 
             if (!string.IsNullOrEmpty(filter.FirstName))
             {
-                query = query.Where(x => x.FirstName == filter.FirstName);
+                query = query.Where(x => EF.Functions.Like(x.FirstName, $"%{filter.FirstName}%"));
             }
 
             if (!string.IsNullOrEmpty(filter.LastName))
             {
-                query = query.Where(x => x.LastName == filter.LastName);
+                query = query.Where(x => EF.Functions.Like(x.LastName, $"%{filter.LastName}%"));
             }
 
             if (filter.ExcludeRecordId != null)

@@ -82,7 +82,7 @@ namespace LibraryAPI.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.Title))
             {
-                query = query.Where(x => x.Title == filter.Title);
+                query = query.Where(x => EF.Functions.Like(x.Title, $"%{filter.Title}%"));
             }
 
             if (filter.PublishDate != null)
@@ -92,7 +92,12 @@ namespace LibraryAPI.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.ISBN))
             {
-                query = query.Where(x => x.ISBN == filter.ISBN);
+                query = query.Where(x => EF.Functions.Like(x.ISBN, $"%{filter.ISBN}%"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Description))
+            {
+                query = query.Where(x => EF.Functions.Like(x.Description, $"%{filter.Description}%"));
             }
 
             // Include authors if requested

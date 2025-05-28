@@ -110,7 +110,7 @@ namespace LibraryAPI.Repository
 
             if (!string.IsNullOrWhiteSpace(filter.Description))
             {
-                query = query.Where(x => x.Description == filter.Description);
+                query = query.Where(x => EF.Functions.Like(x.Description, $"%{filter.Description}%"));
             }
 
             if (filter.PageNumber != null && filter.PageSize != null)

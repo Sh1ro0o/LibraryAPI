@@ -6,6 +6,7 @@
         public string? Title { get; set; }
         public DateOnly? PublishDate { get; set; }
         public string? ISBN { get; set; }
+        public string? Description { get; set; }
         public bool IncludeAuthors { get; set; } = true; //Include Authors
         public bool IncludeGenres { get; set; } = true; //Include Genres
 
