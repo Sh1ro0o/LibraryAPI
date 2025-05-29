@@ -2,8 +2,7 @@
 {
     public class UserDto
     {
-        public required string Email { get; set; }
-        public required string Token { get; set; }
-        public required DateTime ExpiresOn { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
     }
 }
