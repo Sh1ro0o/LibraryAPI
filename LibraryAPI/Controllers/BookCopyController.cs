@@ -22,7 +22,7 @@ namespace LibraryAPI.Controllers
         [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<IEnumerable<BookCopyDto>>))]
         [ProducesResponseType(500)]
-        [HttpGet("allBooksCopies")]
+        [HttpGet("allBookCopies")]
         public async Task<IActionResult> GetBookCopies([FromQuery] BookCopyFilter filter)
         {
             var bookCopies = await _bookCopyService.GetAll(filter);

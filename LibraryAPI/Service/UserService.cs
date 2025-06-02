@@ -108,6 +108,16 @@ namespace LibraryAPI.Service
             var usersQuerry = _userManager.Users;
             var totalCout = await usersQuerry.CountAsync();
 
+            if (!string.IsNullOrWhiteSpace(userFilter.Id))
+            {
+                usersQuerry = usersQuerry.Where(x => x.Id == userFilter.Id);
+            }
+
+            if (!string.IsNullOrWhiteSpace(userFilter.Email))
+            {
+                usersQuerry = usersQuerry.Where(x => x.Email == userFilter.Email);
+            }
+
             if (userFilter.PageSize != null && userFilter.PageNumber != null)
             {
                 int skip = (userFilter.PageNumber.Value - 1) * userFilter.PageSize.Value;

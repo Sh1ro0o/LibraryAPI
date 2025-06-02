@@ -14,7 +14,8 @@ namespace LibraryAPI.Mapper
                 IsAvailable = bookCopy.IsAvailable,
                 CreateDate = bookCopy.CreateDate,
                 ModifiedDate = bookCopy.ModifiedDate,
-                BookId = bookCopy.BookId
+                BookId = bookCopy.BookId,
+                BookTitle = bookCopy.Book?.Title
             };
         }
 

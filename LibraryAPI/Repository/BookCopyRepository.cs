@@ -91,6 +91,12 @@ namespace LibraryAPI.Repository
             {
                 query = query.Where(x => x.BookId == filter.BookId);
             }
+            if (filter.IncludeBook)
+            {
+                query = query.Include(x => x.Book);
+            }
+
+            query = query.Include(x => x.Book);
 
             if (filter.PageNumber != null && filter.PageSize != null)
             {

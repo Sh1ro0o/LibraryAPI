@@ -12,7 +12,6 @@
         public string? UserId { get; set; }
         public int? BookCopyId { get; set; }
 
-
         public bool IncludeBookCopy { get; set; } = true; //Include BookCopies
         public bool IncludeUser { get; set; } = true; //Include Users
 
