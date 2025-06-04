@@ -76,7 +76,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IBorrowingTransactionService, BorrowingTransactionService>();
 builder.Services.AddScoped<ICurrentUserContext, CurrentUserContext>();
+builder.Services.AddScoped<IAssistantChatService, AssistantChatService>();
 builder.Services.AddSingleton<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 builder.Services.AddControllers();
