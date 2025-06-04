@@ -8,7 +8,7 @@ namespace LibraryAPI.Dto.BorrowingTransaction
         public DateTime DueDate { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        public string UserId { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;  
 
         [Required]
         public int BookCopyId { get; set; }

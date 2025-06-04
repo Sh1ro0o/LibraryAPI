@@ -4,6 +4,7 @@ using LibraryAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryAPI.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    partial class LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250604172913_AssistantChat")]
+    partial class AssistantChat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,7 +114,6 @@ namespace LibraryAPI.Migrations
                         .HasColumnName("SenderType");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("UserId");
 
@@ -349,13 +351,13 @@ namespace LibraryAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "a134fbe7-9cee-431b-b4b4-50487ef4f073",
+                            Id = "bf222b48-48cd-4e97-8f5c-a78e84adecce",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b5cfa0ce-1415-4714-88d2-7bd740af0d90",
+                            Id = "1368a55c-c27a-4d95-8461-a3914d47b379",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -471,9 +473,7 @@ namespace LibraryAPI.Migrations
                 {
                     b.HasOne("LibraryAPI.Model.AppUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
