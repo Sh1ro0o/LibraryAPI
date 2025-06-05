@@ -55,7 +55,8 @@ namespace LibraryAPI.Service
             return new TokenDto
             {
                 Token = tokenHandler.WriteToken(token),
-                ExpiresOn = tokenDescriptor.Expires.Value
+                ExpiresOn = tokenDescriptor.Expires.Value,
+                Roles = roles,
             };
         }
     }

@@ -54,7 +54,8 @@ namespace LibraryAPI.Service
                     {
                         Email = model.Email,
                         Token = tokenDto.Token,
-                        ExpiresOn = tokenDto.ExpiresOn
+                        ExpiresOn = tokenDto.ExpiresOn,
+                        Roles = tokenDto.Roles,
                     };
 
                     //Return success
@@ -94,7 +95,8 @@ namespace LibraryAPI.Service
                 {
                     Email = model.Email,
                     Token = tokenDto.Token,
-                    ExpiresOn = tokenDto.ExpiresOn
+                    ExpiresOn = tokenDto.ExpiresOn,
+                    Roles = tokenDto.Roles,
                 };
 
                 return OperationResult<UserAuthenticationDto?>.Success(userDto);
