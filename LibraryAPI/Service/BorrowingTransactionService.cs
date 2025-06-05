@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Common;
+using LibraryAPI.Common.Constants;
 using LibraryAPI.Dto.BorrowingTransaction;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
@@ -13,15 +14,29 @@ namespace LibraryAPI.Service
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ICurrentUserContext _currentUserContext;
 
-        public BorrowingTransactionService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+        public BorrowingTransactionService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICurrentUserContext currentUserContext)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _currentUserContext = currentUserContext;
         }
 
         public async Task<OperationResult<IEnumerable<BorrowingTransactionDto>>> GetAll(BorrowingTransactionFilter filter)
         {
+            var roles = _currentUserContext.Roles;
+            var userId = _currentUserContext.UserId;
+            if (userId == null || roles.Count < 1)
+            {
+                return OperationResult<IEnumerable<BorrowingTransactionDto>>.InternalServerError(message: "Internal server error! Please contact support!");
+            }
+
+            if (!roles.Contains(Roles.Admin))
+            {
+                filter.UserId = userId;
+            }
+
             var borrowingTransactions = await _unitOfWork.BorrowingTransactionRepository.GetAll(filter);
 
             var borrowingTransactionsDto = borrowingTransactions.Select(x => x.ToBorrowingTransactionDto());

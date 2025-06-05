@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Common.Response;
+﻿using LibraryAPI.Common.Constants;
+using LibraryAPI.Common.Response;
 using LibraryAPI.Dto.BookGenre;
 using LibraryAPI.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ namespace LibraryAPI.Controllers
             _bookGenreService = bookGenreService;
         }
 
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         [ProducesResponseType(200, Type = typeof(ResponseObject<List<BookGenreDto>>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request

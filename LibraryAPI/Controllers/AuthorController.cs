@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Common.Response;
+﻿using LibraryAPI.Common.Constants;
+using LibraryAPI.Common.Response;
 using LibraryAPI.Dto.Author;
 using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
@@ -29,7 +30,7 @@ namespace LibraryAPI.Controllers
             return authors.ToActionResult();
         }
 
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         [ProducesResponseType(200, Type = typeof(ResponseObject<AuthorDto>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
@@ -42,7 +43,7 @@ namespace LibraryAPI.Controllers
             return author.ToActionResult();
         }
 
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         [ProducesResponseType(200, Type = typeof(ResponseObject<AuthorDto>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
@@ -55,7 +56,7 @@ namespace LibraryAPI.Controllers
             return author.ToActionResult();
         }
 
-        [Authorize]
+        [Authorize(Roles = Roles.Admin)]
         [ProducesResponseType(200, Type = typeof(ResponseObject<bool>))] //OK
         [ProducesResponseType(404)] //NotFound
         [ProducesResponseType(400)] //Bad Request
