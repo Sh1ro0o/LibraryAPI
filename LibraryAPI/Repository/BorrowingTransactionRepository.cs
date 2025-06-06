@@ -75,17 +75,17 @@ namespace LibraryAPI.Repository
 
             if (filter.BorrowDate != null)
             {
-                query = query.Where(x => x.BorrowDate >= filter.BorrowDate);
+                query = query.Where(x => x.BorrowDate <= filter.BorrowDate);
             }
 
             if (filter.DueDate != null)
             {
-                query = query.Where(x => x.DueDate >= filter.DueDate);
+                query = query.Where(x => x.DueDate <= filter.DueDate);
             }
 
             if (filter.ReturnedDate != null)
             {
-                query = query.Where(x => x.ReturnedDate >= filter.ReturnedDate);
+                query = query.Where(x => x.ReturnedDate <= filter.ReturnedDate);
             }
 
             if (filter.IsReturned != null)
@@ -95,12 +95,12 @@ namespace LibraryAPI.Repository
 
             if (filter.CreatedDate != null)
             {
-                query = query.Where(x => x.CreatedDate >= filter.CreatedDate);
+                query = query.Where(x => x.CreatedDate <= filter.CreatedDate);
             }
 
             if (filter.ModifiedDate != null)
             {
-                query = query.Where(x => x.ModifiedDate >= filter.ModifiedDate);
+                query = query.Where(x => x.ModifiedDate <= filter.ModifiedDate);
             }
 
             if (!string.IsNullOrWhiteSpace(filter.UserId))
