@@ -14,6 +14,7 @@
 
         public bool IncludeBookCopy { get; set; } = true; //Include BookCopies
         public bool IncludeUser { get; set; } = true; //Include Users
+        public bool IncludeBook { get; set; }
 
         public int? PageNumber { get; set; }
         public int? PageSize { get; set; }

@@ -6,6 +6,8 @@ using System.Text;
 using LibraryAPI.Common.Constants;
 using LibraryAPI.Filters;
 using LibraryAPI.Common.Response;
+using LibraryAPI.Common;
+using LibraryAPI.Dto.AssistantChat;
 
 namespace LibraryAPI.Service
 {
@@ -24,7 +26,7 @@ namespace LibraryAPI.Service
             _OpenApiKey = _configuration["OpenAPI:ApiKey"]!;
         }
 
-        public async Task<string> GetAssistantResponseAsync(string message)
+        public async Task<OperationResult<string?>> GetAssistantResponseAsync(AssistantMessageRequest messageRequest)
         {
             string reply = "";
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
@@ -40,7 +42,7 @@ namespace LibraryAPI.Service
                         role = "system", 
                         content = OpenAiConstants.Prompt
                     },
-                    new { role = "user", content = message },
+                    new { role = "user", content = messageRequest.Message },
                 },
                 stream = false
             };
@@ -73,21 +75,21 @@ namespace LibraryAPI.Service
                             };
 
                             var books = await _unitOfWork.BookRepository.GetAll(bookFilter);
-                            if (books is null)
-                            {
-                                reply = $"I was not able to find any books containing a title: { bookTitle }";
-                            }
-                            else
+                            if (books.Data.Count > 0)
                             {
                                 var titlesOfBooks = books.Data.Select(x => x.Title);
                                 string titlesFormatted = string.Join(", ", titlesOfBooks);
 
                                 reply = $"I have found {books.TotalItems} book/s available: {titlesFormatted} ";
                             }
+                            else
+                            {
+                                reply = $"I was not able to find any books containing a title: {bookTitle}";
+                            }
                         }
                         else
                         {
-                            throw new Exception("Unexpected response from OpenAI.");
+                            return OperationResult<string?>.BadGateway(message: "Unexpected response from OpenAI.");
                         }
                         break;
 
@@ -98,8 +100,8 @@ namespace LibraryAPI.Service
 
                     //GET ALL BOOK GENRES
                     case OpenAiResponses.GET_ALL_BOOK_GENRES:
-                        var filter = new GenreFilter();
-                        var genres = await _unitOfWork.GenreRepository.GetAll(filter);
+                        var genreFilter = new GenreFilter();
+                        var genres = await _unitOfWork.GenreRepository.GetAll(genreFilter);
 
                         var genreNames = genres.Data.Select(x => x.Name);
                         string genresFormatted = string.Join(", ", genreNames);
@@ -109,21 +111,61 @@ namespace LibraryAPI.Service
 
                     //GET OVERDUE BOOKS
                     case OpenAiResponses.GET_OVERDUE_BOOKS:
+                        var overdueFilter = new BorrowingTransactionFilter();
+                        overdueFilter.IsReturned = false;
+                        overdueFilter.DueDate = DateTime.UtcNow;
+                        overdueFilter.IncludeBook = true;
 
+                        var overdueBorrows = await _unitOfWork.BorrowingTransactionRepository.GetAll(overdueFilter);
+
+                        if (overdueBorrows.Count > 0)
+                        {
+
+                            string overdueBorrowsMessage = "Your overdue books are: " +
+                                                string.Join(", ",
+                                                    overdueBorrows.Select(b =>
+                                                        $"{b.BookCopy?.Book?.Title} (due on {b.DueDate:MMMM dd, yyyy})"
+                                                    )
+                                                ) + ".";
+
+                            reply = overdueBorrowsMessage;
+                        }
+                        else
+                        {
+                            reply = "You currently do not have any overdue books.";
+                        }
+                        break;
+
+                    case OpenAiResponses.GREETING:
+                        var greetings = new[]
+                        {
+                            "At your service, hero of the library!",
+                            "Greetings, seeker of knowledge!"
+                        };
+                        var rand = new Random();
+                        reply = greetings[rand.Next(greetings.Length)];
+                        break;
+
+                    case OpenAiResponses.THANKING:
+                        reply = "Hermes has your back. Happy reading from the Mythologix team!";
+                        break;
+
+                    case OpenAiResponses.UNKNOWN_INTENT:
+                        reply = "Hmm, I’m not sure how to help with that yet. Try asking me about books, genres, or your borrowed items!";
                         break;
 
                     //DEFAULT REPLY
                     default:
-                        reply = openAIintent;
+                        reply = "Hmm, I’m not sure how to help with that yet. Try asking me about books, genres, or your borrowed items!";
                         break;
                 }
             }
             else
             {
-                throw new Exception("Unexpected response from OpenAI.");
+                return OperationResult<string?>.BadGateway(message: "Unexpected response from OpenAI.");
             }
 
-            return reply;
+            return OperationResult<string?>.Success(reply);
         }
 
         private AiResponse? ProcessResponseToAiResponse(string body)

@@ -91,5 +91,16 @@ namespace LibraryAPI.Common
                 ErrorType = OperationErrorType.InternalServerError
             };
         }
+
+        public static OperationResult<T> BadGateway(T? data = default, string? message = null)
+        {
+            return new OperationResult<T>
+            {
+                Data = data,
+                IsSuccessful = false,
+                Message = message,
+                ErrorType = OperationErrorType.BadGateway
+            };
+        }
     }
 }

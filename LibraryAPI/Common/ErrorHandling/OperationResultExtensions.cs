@@ -50,6 +50,11 @@ public static class OperationResultExtensions
                 result.StatusCode = StatusCodes.Status500InternalServerError;
                 break;
 
+            case OperationErrorType.BadGateway:
+                result = new ObjectResult(resObj);
+                result.StatusCode = StatusCodes.Status502BadGateway;
+                break;
+
             default:
                 result = new ObjectResult(resObj);
                 result.StatusCode = StatusCodes.Status500InternalServerError;

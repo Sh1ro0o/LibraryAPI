@@ -1,7 +1,10 @@
-﻿namespace LibraryAPI.Interface.Service
+﻿using LibraryAPI.Common;
+using LibraryAPI.Dto.AssistantChat;
+
+namespace LibraryAPI.Interface.Service
 {
     public interface IAssistantChatService
     {
-        Task<string> GetAssistantResponseAsync(string message);
+        Task<OperationResult<string?>> GetAssistantResponseAsync(AssistantMessageRequest messageRequest);
     }
 }

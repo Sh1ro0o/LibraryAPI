@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Common.Response;
+using LibraryAPI.Dto.AssistantChat;
 using LibraryAPI.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,16 @@ namespace LibraryAPI.Controllers
             _assistantChatService = assistantChatService;
         }
 
-        //[Authorize]
+        [Authorize]
         [ProducesResponseType(200, Type = typeof(ResponseObject<string>))] //OK
         [ProducesResponseType(400)] //Bad Request
         [ProducesResponseType(500)] //Internal Server Error
         [HttpPost("assistantResponse")]
-        public async Task<IActionResult> GetAssistantResponse([FromBody] string message)
+        public async Task<IActionResult> GetAssistantResponse([FromBody] AssistantMessageRequest messageRequest)
         {
-            var result = await _assistantChatService.GetAssistantResponseAsync(message);
+            var result = await _assistantChatService.GetAssistantResponseAsync(messageRequest);
 
-            return Ok(result);
+            return result.ToActionResult();
         }
-
     }
 }

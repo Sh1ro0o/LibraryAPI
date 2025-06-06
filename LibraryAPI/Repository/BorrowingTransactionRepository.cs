@@ -116,7 +116,14 @@ namespace LibraryAPI.Repository
             //Includes
             if (filter.IncludeBookCopy)
             {
-                query = query.Include(x => x.BookCopy);
+                if (filter.IncludeBook)
+                {
+                    query = query.Include(x => x.BookCopy).ThenInclude(y => y.Book);
+                }
+                else
+                {
+                    query = query.Include(x => x.BookCopy);
+                }
             }
 
             if (filter.IncludeUser)
