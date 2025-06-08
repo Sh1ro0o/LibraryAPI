@@ -24,8 +24,6 @@
                         - If the user wants to know what genres we offer → intent: {OpenAiResponses.GET_ALL_BOOK_GENRES}  
                         - If the user asks about their overdue books → intent: {OpenAiResponses.GET_OVERDUE_BOOKS}  
                         - If the user wants to see books they have borrowed → intent: {OpenAiResponses.GET_BORROWED_BOOKS}  
-                        - If the user wants to know the return date of a borrowed book → intent: {OpenAiResponses.GET_RETURN_DATE} parameters: {{ """"serialNumber: serial number"""" }}
-                        - If the user wants to know the return date of a borrowed book and no serial number is provided → intent: {OpenAiResponses.ASK_FOR_SN}
                         - If the user thanks Hermes → intent: {OpenAiResponses.THANKING}
                         - If you do not understand the user's request or it does not match any of the above intents → intent: {OpenAiResponses.UNKNOWN_INTENT}
 

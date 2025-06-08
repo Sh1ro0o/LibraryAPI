@@ -136,6 +136,32 @@ namespace LibraryAPI.Service
                         }
                         break;
 
+                    //GET BORROWED BOOKS
+                    case OpenAiResponses.GET_BORROWED_BOOKS:
+                        var borrowedFilter = new BorrowingTransactionFilter();
+                        borrowedFilter.IsReturned = false;
+                        borrowedFilter.IncludeBook = true;
+
+                        var borrowedBooks = await _unitOfWork.BorrowingTransactionRepository.GetAll(borrowedFilter);
+
+                        if (borrowedBooks.Count > 0)
+                        {
+
+                            string borrowedBooksMessage = "Your current borrwed books are: " +
+                                                string.Join(", ",
+                                                    borrowedBooks.Select(b =>
+                                                        $"{b.BookCopy?.Book?.Title} (due on {b.DueDate:MMMM dd, yyyy})"
+                                                    )
+                                                ) + ".";
+
+                            reply = borrowedBooksMessage;
+                        }
+                        else
+                        {
+                            reply = "You currently do not have any borrowed books.";
+                        }
+                        break;
+
                     case OpenAiResponses.GREETING:
                         var greetings = new[]
                         {
