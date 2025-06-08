@@ -1,4 +1,5 @@
 ﻿using LibraryAPI.Data;
+using LibraryAPI.Dto.BorrowingTransaction;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Repository;
 using LibraryAPI.Model;
@@ -27,6 +28,56 @@ namespace LibraryAPI.Repository
         public async Task<BorrowingTransaction?> GetById(int id)
         {
             return await _context.BorrowingTransaction.FirstOrDefaultAsync(x => x.RecordId == id);
+        }
+
+        public async Task<SeperateTransactionsCountDto> GetSeperateTransactionsCount(SeperateTransactionsCountFilter filter)
+        {
+            var borrowingTransactionsCountDto = new SeperateTransactionsCountDto();
+
+            //Borrowed Books Count
+            var borrowedBooksCountQuerry = _context.BorrowingTransaction.AsQueryable();
+            borrowedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.IsReturned == false);
+            if (filter.HasBorrowedToday)
+            {
+                borrowedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.CreatedDate.Date == DateTime.UtcNow.Date);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.UserId))
+            {
+                borrowedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
+            }
+            borrowingTransactionsCountDto.BorrowedBooksCount = await borrowedBooksCountQuerry.CountAsync();
+
+            //Returned Books Count
+            var returnedBooksCountQuerry = _context.BorrowingTransaction.AsQueryable();
+            returnedBooksCountQuerry = returnedBooksCountQuerry.Where(x => x.IsReturned == true);
+            if (filter.HasReturnedToday)
+            {
+                returnedBooksCountQuerry = returnedBooksCountQuerry.Where(x => x.ReturnedDate.HasValue && x.ReturnedDate.Value.Date == DateTime.UtcNow.Date);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.UserId))
+            {
+                borrowedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
+            }
+            borrowingTransactionsCountDto.ReturnedBooksCount = await returnedBooksCountQuerry.CountAsync();
+
+            //Overdue Books Count
+            var overdueBooksCountQuerry = _context.BorrowingTransaction.AsQueryable();
+            overdueBooksCountQuerry = overdueBooksCountQuerry.Where(x => x.IsReturned == false);
+            if (filter.HasOverdueToday)
+            {
+                overdueBooksCountQuerry = overdueBooksCountQuerry.Where(x => x.DueDate.Date == DateTime.UtcNow.Date);
+            }
+            else
+            {
+                overdueBooksCountQuerry = overdueBooksCountQuerry.Where(x => x.DueDate.Date <= DateTime.UtcNow.Date);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.UserId))
+            {
+                borrowedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
+            }
+            borrowingTransactionsCountDto.OverdueBooksCount = await overdueBooksCountQuerry.CountAsync();
+
+            return borrowingTransactionsCountDto;
         }
 
         #endregion

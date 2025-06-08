@@ -56,6 +56,25 @@ namespace LibraryAPI.Service
             return OperationResult<BorrowingTransactionDto?>.Success(borrowingTransaction.ToBorrowingTransactionDto());
         }
 
+        public async Task<OperationResult<SeperateTransactionsCountDto?>> GetSeperateTransactionsCount(SeperateTransactionsCountFilter filter)
+        {
+            var roles = _currentUserContext.Roles;
+            var userId = _currentUserContext.UserId;
+            if (userId == null || roles.Count < 1)
+            {
+                return OperationResult<SeperateTransactionsCountDto?>.InternalServerError(message: "Internal server error! Please contact support!");
+            }
+
+            if (!roles.Contains(Roles.Admin))
+            {
+                filter.UserId = userId;
+            }
+
+            var seperateTransactionsCount = await _unitOfWork.BorrowingTransactionRepository.GetSeperateTransactionsCount(filter);
+
+            return OperationResult<SeperateTransactionsCountDto?>.Success(seperateTransactionsCount);
+        }
+
         public async Task<OperationResult<BorrowingTransactionDto?>> CreateBorrowingTransaction(CreateBorrowingTransactionDto model)
         {
             //Check if User exists

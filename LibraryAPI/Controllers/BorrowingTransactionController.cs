@@ -31,6 +31,17 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
+        [ProducesResponseType(200, Type = typeof(ResponseObject<SeperateTransactionsCountDto>))]
+        [ProducesResponseType(500)]
+        [HttpGet("GetSeperateTransactionsCount")]
+        public async Task<IActionResult> GetSeperateTransactionsCount([FromQuery] SeperateTransactionsCountFilter filter)
+        {
+            var result = await _borrowingTransactionService.GetSeperateTransactionsCount(filter);
+
+            return result.ToActionResult();
+        }
+
         [Authorize(Roles = Roles.Admin)]
         [ProducesResponseType(200, Type = typeof(ResponseObject<BorrowingTransactionDto>))] //OK
         [ProducesResponseType(409)] //Conflict
