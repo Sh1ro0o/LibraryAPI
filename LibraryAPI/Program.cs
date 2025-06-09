@@ -92,7 +92,10 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("http://localhost:4200")
+                .WithOrigins(
+                    "http://localhost:4200", //Local frontend
+                    "https://salmon-sky-0c673840f.6.azurestaticapps.net" //Deployed frontend
+                )
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
