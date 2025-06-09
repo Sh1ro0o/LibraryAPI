@@ -8,6 +8,9 @@ using LibraryAPI.Filters;
 using LibraryAPI.Common.Response;
 using LibraryAPI.Common;
 using LibraryAPI.Dto.AssistantChat;
+using LibraryAPI.Model;
+using LibraryAPI.Dto.BorrowingTransaction;
+using Microsoft.AspNetCore.Identity;
 
 namespace LibraryAPI.Service
 {
@@ -16,18 +19,29 @@ namespace LibraryAPI.Service
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUserContext _currentUserContext;
+        private readonly UserManager<AppUser> _userManager;
         private readonly string _OpenApiKey;
 
-        public AssistantChatService(IUnitOfWork unitOfWork, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public AssistantChatService(IUnitOfWork unitOfWork, IConfiguration configuration, IHttpClientFactory httpClientFactory, ICurrentUserContext currentUserContext, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _httpClient = httpClientFactory.CreateClient();
+            _currentUserContext = currentUserContext;
+            _userManager = userManager;
             _OpenApiKey = _configuration["OpenAPI:ApiKey"]!;
         }
 
         public async Task<OperationResult<string?>> GetAssistantResponseAsync(AssistantMessageRequest messageRequest)
         {
+            //Check if User exists
+            var existingUser = await _userManager.FindByIdAsync(_currentUserContext.UserId);
+            if (existingUser == null)
+            {
+                return OperationResult<string?>.NotFound(message: $"User with Id: {_currentUserContext.UserId} Not Found!");
+            }
+
             string reply = "";
             var request = new HttpRequestMessage(HttpMethod.Post, "https://api.openai.com/v1/chat/completions");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _OpenApiKey);
@@ -190,6 +204,26 @@ namespace LibraryAPI.Service
             {
                 return OperationResult<string?>.BadGateway(message: "Unexpected response from OpenAI.");
             }
+
+            //Log user message
+            var userChat = new AssistantChat
+            {
+                SenderType = SenderType.User,
+                Message = messageRequest.Message,
+                UserId = existingUser.Id
+            };
+            await _unitOfWork.AssistantChatRepository.CreateChatLog(userChat);
+
+            //Log assistant response
+            var assistantChat = new AssistantChat
+            {
+                SenderType = SenderType.Assistant,
+                Message = reply,
+                UserId = existingUser.Id
+            };
+            await _unitOfWork.AssistantChatRepository.CreateChatLog(assistantChat);
+
+            await _unitOfWork.Commit();
 
             return OperationResult<string?>.Success(reply);
         }

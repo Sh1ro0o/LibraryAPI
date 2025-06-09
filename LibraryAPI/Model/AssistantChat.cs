@@ -14,7 +14,7 @@ namespace LibraryAPI.Model
         public DateTime CreateDate { get; set; } = DateTime.UtcNow;
         public string SenderType { get; set; } = Common.Constants.SenderType.Undefined;
 
-        public string UserId { get; set; } = string.Empty;
+        public required string UserId { get; set; }
         public AppUser? User { get; set; }
     }
 }
