@@ -36,10 +36,18 @@ namespace LibraryAPI.Service
         public async Task<OperationResult<string?>> GetAssistantResponseAsync(AssistantMessageRequest messageRequest)
         {
             //Check if User exists
-            var existingUser = await _userManager.FindByIdAsync(_currentUserContext.UserId);
+            var userIdcontext = _currentUserContext.UserId;
+            var existingUser = await _userManager.FindByIdAsync(userIdcontext);
             if (existingUser == null)
             {
-                return OperationResult<string?>.NotFound(message: $"User with Id: {_currentUserContext.UserId} Not Found!");
+                return OperationResult<string?>.NotFound(message: $"User with Id: {userIdcontext} Not Found!");
+            }
+
+            //Check if roles assigned
+            var roles = _currentUserContext.Roles;
+            if (roles.Count < 1)
+            {
+                return OperationResult<string?>.InternalServerError(message: "Internal server error! Please contact support!");
             }
 
             string reply = "";
@@ -130,6 +138,11 @@ namespace LibraryAPI.Service
                         overdueFilter.DueDate = DateTime.UtcNow;
                         overdueFilter.IncludeBook = true;
 
+                        if (!roles.Contains(Roles.Admin))
+                        {
+                            overdueFilter.UserId = userIdcontext;
+                        }
+
                         var overdueBorrows = await _unitOfWork.BorrowingTransactionRepository.GetAll(overdueFilter);
 
                         if (overdueBorrows.Count > 0)
@@ -155,6 +168,11 @@ namespace LibraryAPI.Service
                         var borrowedFilter = new BorrowingTransactionFilter();
                         borrowedFilter.IsReturned = false;
                         borrowedFilter.IncludeBook = true;
+
+                        if (!roles.Contains(Roles.Admin))
+                        {
+                            borrowedFilter.UserId = userIdcontext;
+                        }
 
                         var borrowedBooks = await _unitOfWork.BorrowingTransactionRepository.GetAll(borrowedFilter);
 
