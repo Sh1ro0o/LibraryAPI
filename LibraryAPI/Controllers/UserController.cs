@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Common.Constants;
+﻿using Azure.Core;
+using LibraryAPI.Common.Constants;
 using LibraryAPI.Common.Response;
 using LibraryAPI.Dto.BookGenre;
 using LibraryAPI.Dto.User;
@@ -8,6 +9,9 @@ using LibraryAPI.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace LibraryAPI.Controllers
 {
@@ -16,18 +20,27 @@ namespace LibraryAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController (IUserService userService)
+        private readonly IConfiguration _configuration;
+
+        public UserController (IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
+            _configuration = configuration;
         }
 
-        [ProducesResponseType(200, Type = typeof(ResponseObject<UserDto?>))] //OK
+        [ProducesResponseType(200, Type = typeof(ResponseObject<UserAuthenticationDto?>))] //OK
         [ProducesResponseType(400)] //Bad Request
         [ProducesResponseType(500)] //Internal Server Error
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
             var result = await _userService.UserRegister(model);
+
+            //If successful create SessionCookie
+            if (result.IsSuccessful && result.Data != null)
+            {
+                CreateSessionCookie(result.Data.Token);
+            }
 
             return result.ToActionResult();
         }
@@ -39,6 +52,12 @@ namespace LibraryAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var result = await _userService.UserLogin(model);
+
+            //If successful create SessionCookie
+            if (result.IsSuccessful && result.Data != null)
+            {
+                CreateSessionCookie(result.Data.Token);
+            }
 
             return result.ToActionResult();
         }
@@ -66,6 +85,29 @@ namespace LibraryAPI.Controllers
             var result = await _userService.GetByEmail(email);
 
             return result.ToActionResult();
+        }
+
+
+        private void CreateSessionCookie(string token)
+        {
+            var requestHost = HttpContext.Request.Host.Host?.ToLowerInvariant();
+            var isLocalhost = string.IsNullOrEmpty(requestHost) || requestHost.Contains("localhost");
+            string? cookieDomain = null;
+
+            if (!isLocalhost)
+            {
+                cookieDomain = requestHost;
+            }
+
+            Response.Cookies.Append(CookieNames.SessionToken, token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = !isLocalhost,
+                SameSite = isLocalhost ? SameSiteMode.Lax : SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Domain = cookieDomain,
+                Path = "/"
+            });
         }
     }
 }

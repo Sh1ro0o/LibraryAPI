@@ -1,3 +1,4 @@
+using LibraryAPI.Common.Constants;
 using LibraryAPI.Data;
 using LibraryAPI.Interface;
 using LibraryAPI.Interface.Repository;
@@ -42,6 +43,19 @@ builder.Services.AddAuthentication(options =>
     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Cookies[CookieNames.SessionToken];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -103,19 +117,19 @@ builder.Services.AddCors(options =>
         });
 });
 
-//Add JWT Bearer to Swagger
+//Swagger
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Library API", Version = "v1" });
+
+    option.AddSecurityDefinition("SessionCookie", new OpenApiSecurityScheme
     {
-        Name = "Authorization",
+        Name = CookieNames.SessionToken,
         Type = SecuritySchemeType.ApiKey,
-        In = ParameterLocation.Header,
-        Description = "Paste the full token including 'Bearer ' prefix here",
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
+        In = ParameterLocation.Cookie,
+        Description = "JWT session token stored in cookie"
     });
+
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -123,11 +137,11 @@ builder.Services.AddSwaggerGen(option =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "SessionCookie"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
@@ -138,7 +152,11 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseHttpsRedirection();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseExceptionHandler(appBuilder =>
 {
