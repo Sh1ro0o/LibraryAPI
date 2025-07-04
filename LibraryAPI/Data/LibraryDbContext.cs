@@ -18,6 +18,7 @@ namespace LibraryAPI.Data
         public DbSet<BookGenre> BookGenre { get; set; }
         public DbSet<BorrowingTransaction> BorrowingTransaction { get; set; }
         public DbSet<AssistantChat> AssistantChat { get; set; }
+        public DbSet<RefreshToken> RefreshToken { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

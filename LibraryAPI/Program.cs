@@ -79,6 +79,7 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
 builder.Services.AddScoped<IBorrowingTransactionRepository, BorrowingTransactionRepository>();
 builder.Services.AddScoped<IAssistantChatRepository, AssistantChatRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 //Service
 builder.Services.AddScoped<IBookService, BookService>();
