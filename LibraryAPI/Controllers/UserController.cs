@@ -14,11 +14,13 @@ namespace LibraryAPI.Controllers
     {
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
+        private readonly ICookieService _cookieService;
 
-        public UserController (IUserService userService, IConfiguration configuration)
+        public UserController (IUserService userService, IConfiguration configuration, ICookieService cookieService)
         {
             _userService = userService;
             _configuration = configuration;
+            _cookieService = cookieService;
         }
 
         [ProducesResponseType(200, Type = typeof(ResponseObject<UserAuthenticationDto?>))] //OK
@@ -29,10 +31,11 @@ namespace LibraryAPI.Controllers
         {
             var result = await _userService.UserRegister(model);
 
-            //If successful create SessionCookie
+            //If successful create SessionCookie and RefreshCookie
             if (result.IsSuccessful && result.Data != null)
             {
-                CreateSessionCookie(result.Data.Token);
+                _cookieService.CreateSessionCookie(result.Data.Token, Request, Response);
+                _cookieService.CreateRefreshCookie(result.Data.RefreshToken, Request, Response);
             }
 
             return result.ToActionResult();
@@ -46,10 +49,11 @@ namespace LibraryAPI.Controllers
         {
             var result = await _userService.UserLogin(model);
 
-            //If successful create SessionCookie
+            //If successful create SessionCookie and RefreshCookie
             if (result.IsSuccessful && result.Data != null)
             {
-                CreateSessionCookie(result.Data.Token);
+                _cookieService.CreateSessionCookie(result.Data.Token, Request, Response);
+                _cookieService.CreateRefreshCookie(result.Data.RefreshToken, Request, Response);
             }
 
             return result.ToActionResult();
@@ -78,29 +82,6 @@ namespace LibraryAPI.Controllers
             var result = await _userService.GetByEmail(email);
 
             return result.ToActionResult();
-        }
-
-
-        private void CreateSessionCookie(string token)
-        {
-            var requestHost = HttpContext.Request.Host.Host?.ToLowerInvariant();
-            var isLocalhost = string.IsNullOrEmpty(requestHost) || requestHost.Contains("localhost");
-            string? cookieDomain = null;
-
-            if (!isLocalhost)
-            {
-                cookieDomain = requestHost;
-            }
-
-            Response.Cookies.Append(CookieNames.SessionToken, token, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = !isLocalhost,
-                SameSite = isLocalhost ? SameSiteMode.Lax : SameSiteMode.None,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
-                Domain = cookieDomain,
-                Path = "/"
-            });
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using LibraryAPI.Common;
 using LibraryAPI.Common.Constants;
-using LibraryAPI.Dto.Book;
 using LibraryAPI.Dto.User;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
@@ -8,10 +7,6 @@ using LibraryAPI.Mapper;
 using LibraryAPI.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LibraryAPI.Service
 {
@@ -21,11 +16,12 @@ namespace LibraryAPI.Service
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signinManager, ITokenService tokenService)
+        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signinManager, ITokenService tokenService, IRefreshTokenService refreshTokenService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signinManager;
+            _refreshTokenService = refreshTokenService;
         }
 
         public async Task<OperationResult<UserAuthenticationDto?>> UserRegister(RegisterDto model)

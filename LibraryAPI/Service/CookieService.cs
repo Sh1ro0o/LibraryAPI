@@ -29,7 +29,7 @@ namespace LibraryAPI.Service
                 HttpOnly = true,
                 Secure = !isLocalhost,
                 SameSite = isLocalhost ? SameSiteMode.Lax : SameSiteMode.None,
-                Expires = DateTimeOffset.UtcNow.AddDays(7),
+                Expires = DateTimeOffset.UtcNow.AddMinutes(5),
                 Domain = cookieDomain,
                 Path = "/"
             });
