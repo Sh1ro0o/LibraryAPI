@@ -9,7 +9,7 @@ namespace LibraryAPI.Config
         public void Configure(EntityTypeBuilder<RefreshToken> builder)
         {
             builder.HasKey(x => x.RecordId);
-            builder.Property(x => x.RecordId).HasColumnName("Id").HasColumnType("int");
+            builder.Property(x => x.RecordId).HasColumnName("Id").HasColumnType("nvarchar(32)").ValueGeneratedNever();
             builder.Property(x => x.UserId).HasColumnName("UserId").HasColumnType("nvarchar(450)");
             builder.Property(x => x.ExpiresAt).HasColumnName("ExpiresAt").HasColumnType("datetime");
             builder.Property(x => x.CreatedAt).HasColumnName("CreatedAt").HasColumnType("datetime");

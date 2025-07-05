@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LibraryAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class RefreshTokentableadded : Migration
+    public partial class RefreshTokentable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,8 +27,7 @@ namespace LibraryAPI.Migrations
                 name: "RefreshToken",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(32)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
@@ -50,8 +49,8 @@ namespace LibraryAPI.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1566a313-5887-4f8d-94c4-874457e458d2", null, "Admin", "ADMIN" },
-                    { "bc627f49-04a8-4b0c-abe9-debcb5a3a4ac", null, "User", "USER" }
+                    { "1639e109-6953-4303-99d4-396b072a892c", null, "Admin", "ADMIN" },
+                    { "2912ce60-b73a-4865-8b18-c74c055f40ef", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -69,12 +68,12 @@ namespace LibraryAPI.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "1566a313-5887-4f8d-94c4-874457e458d2");
+                keyValue: "1639e109-6953-4303-99d4-396b072a892c");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "bc627f49-04a8-4b0c-abe9-debcb5a3a4ac");
+                keyValue: "2912ce60-b73a-4865-8b18-c74c055f40ef");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",

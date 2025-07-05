@@ -7,8 +7,8 @@ namespace LibraryAPI.Model
     {
         [Key]
         [Column("Id")]
-        public int RecordId { get; set; }
-        public string UserId { get; set; } = string.Empty;
+        public required string RecordId { get; set; }
+        public required string UserId { get; set; }
         public DateTime ExpiresAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? RevokedAt { get; set; }

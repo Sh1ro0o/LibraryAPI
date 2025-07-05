@@ -93,7 +93,10 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IBorrowingTransactionService, BorrowingTransactionService>();
 builder.Services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 builder.Services.AddScoped<IAssistantChatService, AssistantChatService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddSingleton<ISerialNumberGeneratorService, SerialNumberGeneratorService>();
+builder.Services.AddSingleton<ICookieService, CookieService>();
 builder.Services.AddHttpClient();
 
 // Add services to the container.

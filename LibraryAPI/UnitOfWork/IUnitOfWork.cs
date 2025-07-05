@@ -13,6 +13,8 @@ namespace LibraryAPI.UnitOfWork
         IBookGenreRepository BookGenreRepository { get; }
         IBorrowingTransactionRepository BorrowingTransactionRepository { get; }
         IAssistantChatRepository AssistantChatRepository { get; }
+        IRefreshTokenRepository RefreshTokenRepository { get; }
+
 
         Task<int> Commit();
     }

@@ -25,7 +25,7 @@ namespace LibraryAPI.Repository
             return await GetRefreshTokensFilteredInternal(filter).FirstOrDefaultAsync();
         }
 
-        async Task<RefreshToken?> IRefreshTokenRepository.GetById(int id)
+        async Task<RefreshToken?> IRefreshTokenRepository.GetById(string id)
         {
             return await _context.RefreshToken.FirstOrDefaultAsync(x => x.RecordId == id);
         }
@@ -53,7 +53,7 @@ namespace LibraryAPI.Repository
         {
             var query = _context.RefreshToken.AsQueryable();
 
-            if (filter.RecordId != null)
+            if (!string.IsNullOrWhiteSpace(filter.RecordId))
             {
                 query = query.Where(x => x.RecordId == filter.RecordId);
             }

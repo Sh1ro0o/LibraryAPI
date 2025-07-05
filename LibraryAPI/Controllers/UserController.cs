@@ -1,17 +1,10 @@
-﻿using Azure.Core;
-using LibraryAPI.Common.Constants;
+﻿using LibraryAPI.Common.Constants;
 using LibraryAPI.Common.Response;
-using LibraryAPI.Dto.BookGenre;
 using LibraryAPI.Dto.User;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
-using LibraryAPI.Model;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace LibraryAPI.Controllers
 {
@@ -45,7 +38,7 @@ namespace LibraryAPI.Controllers
             return result.ToActionResult();
         }
 
-        [ProducesResponseType(200, Type = typeof(ResponseObject<UserDto?>))] //OK
+        [ProducesResponseType(200, Type = typeof(ResponseObject<UserAuthenticationDto?>))] //OK
         [ProducesResponseType(400)] //Bad Request
         [ProducesResponseType(500)] //Internal Server Error
         [HttpPost("Login")]

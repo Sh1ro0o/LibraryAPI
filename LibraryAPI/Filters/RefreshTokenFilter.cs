@@ -2,7 +2,7 @@
 {
     public class RefreshTokenFilter
     {
-        public int? RecordId { get; set; }
+        public string? RecordId { get; set; }
         public string? UserId { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public DateTime? CreatedAt { get; set; }

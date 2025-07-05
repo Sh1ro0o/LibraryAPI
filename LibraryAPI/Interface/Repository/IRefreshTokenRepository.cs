@@ -8,7 +8,7 @@ namespace LibraryAPI.Interface.Repository
     {
         Task<ICollection<RefreshToken>> GetAll(RefreshTokenFilter filter);
         Task<RefreshToken?> GetOne(RefreshTokenFilter filter);
-        Task<RefreshToken?> GetById(int id);
+        Task<RefreshToken?> GetById(string id);
         Task<RefreshToken> Create(RefreshToken model);
         void Update(RefreshToken refreshToken);
         void Delete(RefreshToken refreshToken);

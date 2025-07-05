@@ -9,6 +9,7 @@ using LibraryAPI.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -19,6 +20,7 @@ namespace LibraryAPI.Service
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenService _tokenService;
+        private readonly IRefreshTokenService _refreshTokenService;
         public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signinManager, ITokenService tokenService)
         {
             _userManager = userManager;
@@ -50,10 +52,18 @@ namespace LibraryAPI.Service
                 {
                     var tokenDto = await _tokenService.CreateToken(newUser);
 
+                    //Create Refresh Token
+                    var refreshTokenResult = await _refreshTokenService.CreateAndStoreRefreshTokenAsync(newUser.Id);
+                    if (!refreshTokenResult.IsSuccessful || refreshTokenResult.Data == null)
+                    {
+                        return OperationResult<UserAuthenticationDto?>.InternalServerError(message: refreshTokenResult.Message);
+                    }
+
                     var newUserDto = new UserAuthenticationDto
                     {
                         Email = model.Email,
                         Token = tokenDto.Token,
+                        RefreshToken = refreshTokenResult.Data,
                         ExpiresOn = tokenDto.ExpiresOn,
                         Roles = tokenDto.Roles,
                     };
@@ -89,12 +99,21 @@ namespace LibraryAPI.Service
 
             if (userLogin.Succeeded)
             {
+                //Create Session Token
                 var tokenDto = await _tokenService.CreateToken(user);
+
+                //Create Refresh Token
+                var refreshTokenResult = await _refreshTokenService.CreateAndStoreRefreshTokenAsync(user.Id);
+                if (!refreshTokenResult.IsSuccessful || refreshTokenResult.Data == null)
+                {
+                    return OperationResult<UserAuthenticationDto?>.InternalServerError(message: refreshTokenResult.Message);
+                }
 
                 var userDto = new UserAuthenticationDto
                 {
                     Email = model.Email,
                     Token = tokenDto.Token,
+                    RefreshToken = refreshTokenResult.Data,
                     ExpiresOn = tokenDto.ExpiresOn,
                     Roles = tokenDto.Roles,
                 };

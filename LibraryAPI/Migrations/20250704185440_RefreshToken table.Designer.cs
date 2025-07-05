@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryAPI.Migrations
 {
     [DbContext(typeof(LibraryDbContext))]
-    [Migration("20250704001430_RefreshToken table added")]
-    partial class RefreshTokentableadded
+    [Migration("20250704185440_RefreshToken table")]
+    partial class RefreshTokentable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -325,12 +325,9 @@ namespace LibraryAPI.Migrations
 
             modelBuilder.Entity("LibraryAPI.Model.RefreshToken", b =>
                 {
-                    b.Property<int>("RecordId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                    b.Property<string>("RecordId")
+                        .HasColumnType("nvarchar(32)")
                         .HasColumnName("Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecordId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
@@ -385,13 +382,13 @@ namespace LibraryAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1566a313-5887-4f8d-94c4-874457e458d2",
+                            Id = "1639e109-6953-4303-99d4-396b072a892c",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "bc627f49-04a8-4b0c-abe9-debcb5a3a4ac",
+                            Id = "2912ce60-b73a-4865-8b18-c74c055f40ef",
                             Name = "User",
                             NormalizedName = "USER"
                         });
