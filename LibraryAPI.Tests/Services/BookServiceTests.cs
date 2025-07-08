@@ -1,6 +1,7 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using LibraryAPI.Common.Enums;
+using LibraryAPI.Common.Response;
 using LibraryAPI.Dto.Book;
 using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
@@ -32,7 +33,7 @@ namespace LibraryAPI.Tests.Services
         {
             //Arrange
             var filter = new BookFilter();
-            var fakeBooks = A.Fake<List<Book>>();
+            var fakeBooks = A.Fake<PaginatedResponse<Book>>();
 
             A.CallTo(() => _unitOfWork.BookRepository.GetAll(filter)).Returns(fakeBooks);
 
