@@ -5,6 +5,7 @@ using LibraryAPI.Filters;
 using LibraryAPI.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Web.Http.Results;
 
 namespace LibraryAPI.Controllers
 {
@@ -57,6 +58,23 @@ namespace LibraryAPI.Controllers
             }
 
             return result.ToActionResult();
+        }
+
+        [ProducesResponseType(200, Type = typeof(bool))] //OK
+        [ProducesResponseType(500)] //Internal Server Error
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            try
+            {
+                Response.Cookies.Delete(CookieNames.SessionToken, new CookieOptions { Path = "/" });
+                Response.Cookies.Delete(CookieNames.RefreshToken, new CookieOptions { Path = "/" });
+            }
+            catch (Exception ex) {
+                return StatusCode(StatusCodes.Status500InternalServerError, false);
+            }
+
+            return Ok(true);
         }
 
         [Authorize(Roles = Roles.Admin)]

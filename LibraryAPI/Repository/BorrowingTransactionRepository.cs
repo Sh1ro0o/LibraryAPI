@@ -73,7 +73,7 @@ namespace LibraryAPI.Repository
             }
             if (!string.IsNullOrWhiteSpace(filter.UserId))
             {
-                borrowedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
+                overdueBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
             }
             borrowingTransactionsCountDto.OverdueBooksCount = await overdueBooksCountQuerry.CountAsync();
 
