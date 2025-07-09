@@ -1,4 +1,5 @@
-﻿using LibraryAPI.Common.Constants;
+﻿using LibraryAPI.Common;
+using LibraryAPI.Common.Constants;
 using LibraryAPI.Common.Response;
 using LibraryAPI.Dto.Author;
 using LibraryAPI.Dto.User;
@@ -30,7 +31,8 @@ namespace LibraryAPI.Controllers
         {
             var refreshToken = HttpContext.Request.Cookies[CookieNames.RefreshToken];
             if (refreshToken == null) {
-                return BadRequest();
+                var badRequest = OperationResult<UserAuthenticationDto?>.NotFound(message: "Token expired");
+                return badRequest.ToActionResult();
             }
 
             var result = await _authService.RefreshSessionToken(refreshToken);
