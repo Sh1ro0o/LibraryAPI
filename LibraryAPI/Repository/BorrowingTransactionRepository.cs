@@ -56,7 +56,7 @@ namespace LibraryAPI.Repository
             }
             if (!string.IsNullOrWhiteSpace(filter.UserId))
             {
-                returnedBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
+                returnedBooksCountQuerry = returnedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
             }
             borrowingTransactionsCountDto.ReturnedBooksCount = await returnedBooksCountQuerry.CountAsync();
 
@@ -73,7 +73,7 @@ namespace LibraryAPI.Repository
             }
             if (!string.IsNullOrWhiteSpace(filter.UserId))
             {
-                overdueBooksCountQuerry = borrowedBooksCountQuerry.Where(x => x.UserId == filter.UserId);
+                overdueBooksCountQuerry = overdueBooksCountQuerry.Where(x => x.UserId == filter.UserId);
             }
             borrowingTransactionsCountDto.OverdueBooksCount = await overdueBooksCountQuerry.CountAsync();
 
